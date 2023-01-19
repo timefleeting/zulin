@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>星服在线管理后台</title>
+	<?php echo V('common','head'); ?>
+</head>
+<body>
+	<?php echo V('common','header'); ?>
+<style>
+	.account-info{padding:1rem;}
+</style>
+	<div class="fullscreen wrap-content hasheader">
+		<div class="trow">
+			<div class="navigate noselect tcell texttop fixed-left">
+					<?php echo V('common','navigate'); ?>
+			</div>
+			
+			<div class="content tcell texttop fixed-right">
+					<div class="account-info">
+						<div class="info-head">管理员个人帐号信息</div>
+						<div class="info-content"></div>
+					</div>
+			</div>
+		</div>
+	</div>
+<!-- 底部页脚END -->
+<?php echo V('common','foot');?>
+<script>
+(function($){
+		$.ready(function(){
+				loadContent();
+		});
+		function loadContent(){
+			var loading = $.loading().open();	
+			$.ajaxHtml("{__account/info_content__}",{},true,function(html){
+					$(".account-info .info-content").html(html);
+					loading.close();
+					popups();
+			});
+		}
+		function popups(){
+			$('.wrap-content').on('click','.popups-url',function(){
+				var url     = this.getAttribute('popups-url');
+		 		var d       = $(this).queryParam('param');
+		 		var loading = $.loading().open();
+		 		setTimeout(function(){
+		 			$.ajaxHtml(url,d,true,function( html ){
+		 				var popups = $.popups();
+						var open   = popups.open( html );
+						loading.close();
+						/*关闭事件*/
+						$(open).on('click','.modal-close',function(){
+								popups.close(open);
+								loadContent();
+						});
+		 			});
+		 		},500);	
+			});
+		}
+		function popupsCloseReload(){
+				loadContent();
+		}
+		window.popupsCloseReload = popupsCloseReload;
+})(model);
+</script>
+</body>
+</html>

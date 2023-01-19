@@ -1,0 +1,128 @@
+<?php 
+	$uuid = Q('uuid');
+?>
+<script type="text/javascript">
+(function($){
+		//事件:tabs 注意切换close事件
+		// 注意:关闭事件回调处理 popupsCloseReload 
+		$('.popups-content').on('click','.tabs-item',function(){
+				if(this.classList.contains('active'))
+						return false;
+				var url	 = this.getAttribute('data-url');
+				var d 	 = $( this ).queryParam();
+				var load = $.loading().open();
+				$.ajaxHtml(url,d,true,function(html){
+						var contentNode = document.querySelector('.popups-content');
+						var parentNode  = contentNode.parentNode;
+						$( parentNode).html(html);
+						load.close();
+						//事件:关闭
+						$( parentNode).on('click','.modal-close',function(){
+								var popups = $.popups();
+								popups.close(parentNode.parentNode);
+								//reLoadList();
+								typeof popupsCloseReload =='function' ? popupsCloseReload() : false;
+						});
+				});
+		});
+		//事件:弹出框
+		$('.popups-content').on('click','.popups-url',function(){
+				var url     = this.getAttribute('popups-url');
+				 		var d       = $(this).queryParam('param');
+				 		var win     = $(this).queryParam('win');
+				 		var loading = $.loading().open();
+				 		setTimeout(function(){
+				 			$.ajaxHtml(url,d,true,function( html ){
+				 				var popups = $.popups(win);
+								var open   = popups.open( html );
+								loading.close();
+								/*关闭事件*/
+								$(open).on('click','.modal-close',function(){
+										popups.close(open);
+								});
+				 			});
+				},500);	
+		});
+
+		function isNumber(value) {
+		    var patrn = /^(-)?\d+(\.\d+)?$/;
+		    if (patrn.exec(value) == null || value == "") {
+		        return false
+		    } else {
+		        return true
+		    }
+		}
+
+
+		//事件:提交
+		$('.popups-content').on('click','.footer-btn',function(){ 
+				footerBtn( this );
+		});
+
+		function footerBtn( self,again ){
+				var url  	    = self.getAttribute('data-url') || ''; 
+				var statusClose = self.getAttribute('data-statusclose') || '';
+				var statusCloseAll = self.getAttribute('data-statuscloseall') || '';
+				if(url==''||url==null){
+						return true;
+				}
+				var again = again || 0;  //二次提交标识
+				var selfPopups = $(self).parents('popups'); //该按钮下所在的弹窗
+				if($.isEmptyObject(selfPopups)){
+						return false;
+				}
+				var where={},d={};
+				var load = $.loading().open();
+				d['where']      = $(self).queryParam('where'); //where
+				var formControl = $(self).queryParam('form');  //form
+				if( $.isEmptyObject(formControl) ){
+					//d['data']   = $(".form-control").formData();
+					d['data'] = $(selfPopups.querySelectorAll('.form-control')).formData();
+				}else{
+					$.each(formControl,function(index,item){
+						//d[index]    =  $("."+item).formData();
+						d[index]  =  $(selfPopups.querySelectorAll("."+item)).formData();
+					});
+				}
+				d['again'] = again;
+				setTimeout(function(){
+					$.ajax(url,{data:d,dataType:'json',type:'post',async:true,
+							success:function(res){
+									load.close();
+									var msg='',status=0,msgcode=0;
+									try{
+										msg 	= res.msg || '异常';
+										status 	= res.status  || 0;
+										msgcode = res.msgcode || 0;
+									}catch(e){}
+									if(msgcode==1 && again!=1 ){ //再一次提交
+											if( confirm(msg) ){
+												 footerBtn(self,1);
+											}			
+									}else{
+										$.notice(msg,{type:status,timeout:1500});
+										
+										if(isNumber( statusClose ) && statusClose==status){ //指定状态关闭
+												setTimeout(function(){
+																$.popups().close(selfPopups);
+																popupsCloseReload(); //刷新层下列表
+												},1500);
+										}else if(isNumber(statusCloseAll)&&statusCloseAll==status){
+												setTimeout(function(){
+																$.popups().closeAll();
+																popupsCloseReload(); //刷新层下列表
+												},1500);
+										}
+									}
+									
+							},
+							error:function(){
+									load.close();
+									$.notice("网络异常请重试..");					
+							}
+					});
+				},1000);
+		}
+
+})(model);
+</script>

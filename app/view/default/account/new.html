@@ -1,0 +1,68 @@
+<?php 
+$uuid  = 0;
+$title = "帐号添加";
+echo V('common','popups_head',0,$title); 
+?>
+
+<div class="form-content">
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>手机帐号:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="mobile" placeholder="请输入手机帐号" value="" />
+			</div>
+			<div class="tcell item-descript"><span>(*手机号)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>昵称:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="name" placeholder="请输入昵称" value="" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>密码:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="password" type="password" minlength=6 maxlength=20 placeholder="请输入密码" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>性别:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="gender">
+							<option value="0">保密</option>
+							<option value="1">男</option>
+							<option value="2">女</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>邮箱:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="email" type="text" minlength=3 maxlength=30 placeholder="请输入邮箱" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>排序:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="sort"  type="text" placeholder="帐号排序" value="" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="status">
+							<option value="1" >有效</option>
+							<option value="0" >无效</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+</div>
+<?php echo V('common','popups_footer',array('add'=>array('title'=>'添加','url'=>'{__account/add__}','statusClose'=>1))); ?>

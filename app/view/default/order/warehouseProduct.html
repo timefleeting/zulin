@@ -1,0 +1,77 @@
+<?php
+$action 	= basename(dirname(__FILE__));
+$_page   	= Q('page');
+$_limit  	= Q('limit');
+$query   	= Q('query');
+$init       = Q('init');
+$query = empty( $query ) ? $init : $query;
+
+$warehouse = isset( $query['warehouse'] ) ? $query['warehouse'] : '';
+$classify  = isset( $query['classify'] ) ? $query['classify'] : '';
+$starttime = isset( $query['starttime'] ) ? $query['starttime'] : '';
+$endtime   = isset( $query['endtime'] ) ? $query['endtime'] : '';
+
+$listData 	= C( 'warehouse','warehouseProducts',$warehouse,$classify,$starttime,$endtime );
+$lists     	= isset( $listData['lists'] ) ? $listData['lists'] : false;
+$count 		= isset( $listData['count'] ) ? $listData['count'] : 0;
+$limit 		= isset( $listData['limit'] ) ? $listData['limit'] : $_limit;
+$page  		= isset( $listData['page']  ) ? $listData['page']  : $_page;
+$pageHtml 	= page($page, $count, $limit); 
+$queryParam = "";
+if( !empty( $query )){
+	if(is_array($query)){
+		foreach( $query as $key => $val ){
+			$queryParam .= ' query-'.$key.'="'.$val.'"';
+		}
+	}else{
+		$queryParam = 'query-param="'.$query.'"';
+	}	
+}
+
+?>
+<style>
+.warehouseProduct{margin-left:0;margin-right:0;width:100%;margin-top:0.2rem;}
+</style>
+
+<table class="warehouseProduct table-list textleft" param-page="<?php echo $page;?>" param-limit="<?php echo $limit;?>" <?php echo $queryParam;?> >
+    <thead>
+    <tr>
+    	<th style="width:5%"><input type="checkbox" class="table-checkall textmiddle" value='0'/></th>
+        <th width="20%">所在仓库</th>
+        <th width="20%">所属仓库</th>
+        <th width="25%">设备</th>
+        <th width="15%">价格</th>
+        <th width="15%">状态</th>
+    </tr>
+    </thead>
+
+    <tbody class="textcenter">
+    <?php if(!empty( $lists )): foreach( $lists as $key => $rows ):
+         $checked = isset( $rows['checked'] ) ? true : false;
+    ?>
+    <tr class="list-trow" data-uuid='<?php echo isset( $rows["uuid"] ) ? $rows["uuid"] : false; ?>' data-name="<?php echo $rows['name'];?>">
+    	<td class="table-checkbox">
+            <input type="checkbox" class="device-checkbox" <?php echo $checked==true?'checked':''; ?> data-type="checkbox" param-key='<?php echo isset( $rows["uuid"] ) ? $rows["uuid"] : false; ?>'  value='<?php echo isset( $rows["uuid"] ) ? $rows["uuid"] : false; ?>'/>
+            <input type="hidden"   class="device-checkbox-pagination" data-type="text" param-key='<?php echo isset( $rows["uuid"] ) ? $rows["uuid"] : false; ?>'  value='<?php echo isset( $rows["uuid"] ) ? $rows["uuid"] : false; ?>' />
+        </td>
+        <td><?php echo $rows['targetWhName'];?></td>
+        <td><?php echo $rows['warehouseName'];?></td>
+        <td><?php echo $rows['name'];?></td>
+        <td><?php echo $rows['price']/100;?></td>
+        <td><?php echo C('device','deviceStatus',$rows['deviceStatus']);?></td>
+    </tr>
+    <?php endforeach; else: ?>
+    <tr class="list-trow">
+        <td class="no-record" colspan="6"> 暂无可用库存 </td>
+    </tr>
+    <?php endif; ?>
+    </tbody>
+
+</table>
+
+
+<div class="table-pagination textcenter">
+    <?php echo $pageHtml; ?>
+</div>
+
+

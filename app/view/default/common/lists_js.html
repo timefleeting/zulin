@@ -1,0 +1,177 @@
+<script type="text/javascript">
+(function($){
+
+	$.ready(function(){
+			var tableNode = document.querySelector('.wrap-content .data-table') || {};
+        	loadLists(tableNode);
+    });
+
+	function popupsCloseReload(){
+			var tableNode = document.querySelector('.wrap-content .data-table') || {};
+        	loadLists(tableNode);
+	}
+
+//列表事件:操作信息
+	function tablePopups(tableNode,callback){
+			$(tableNode.parentNode).on('click','.popups-url',function(){
+						var url     = this.getAttribute('popups-url');
+				 		var d       = $(this).queryParam('param');
+				 		var win     = $(this).queryParam('win');
+				 		var loading = $.loading().open();
+				 		setTimeout(function(){
+				 			$.ajaxHtml(url,d,true,function( html ){
+				 				var popups = $.popups(win);
+								var open   = popups.open( html );
+								loading.close();
+								/*关闭事件*/
+								$(open).on('click','.modal-close',function(){
+										popups.close(open);
+										loadLists(tableNode,false,false,callback);
+								});
+				 			});
+				 		},500);	
+			});
+	}
+//列表事件:点击操作
+	function tableClick( tableNode,callback ){
+			$(tableNode.parentNode).on('click','.click-url',function(){
+						var url     = this.getAttribute('click-url');
+				 		var d       = $(this).queryParam('param');
+				 		var loading = $.loading().open();
+				 		setTimeout(function(){
+				 			$.ajax(url,{data:d,dataType:'json',type:'post',async:true,
+										success:function(res){
+												loading.close();
+												var msg='',status=0,msgcode=0;
+												try{
+													msg 	= res.msg || '异常';
+													status 	= res.status  || 0;
+													msgcode = res.msgcode || 0;
+												}catch(e){}
+												$.notice(msg,{type:status,timeout:1500});
+												if(status==1){
+													loadLists(tableNode,false,false,callback);	
+												}
+										},
+										error:function(){
+												loading.close();
+												$.notice("网络异常请重试..");					
+										}
+							});
+				 		},500);	
+			});
+	}
+
+//列表事件:检索
+	function querySearch( tableNode,callback ){
+			$(tableNode.parentNode).on('click','.query-btn',function(){
+					var formKey   = this.getAttribute('data-formKey') || '';
+					var tableData = tableNode.querySelector('.table-list') || {}; 
+					if( formKey!='' && formKey!=null ){
+						var  formData = $("."+formKey).formData() || {};
+						if( !$.isEmptyObject(formData) ){
+						 	for(var i in formData ){
+						 		tableData.setAttribute('query-'+i,formData[i]);
+						 	}
+						}
+					}
+					var queryBtnParam = $(this).queryParam('query-btn');
+					if( !$.isEmptyObject(queryBtnParam) ){
+						 	for(var j in queryBtnParam ){
+						 		tableData.setAttribute('query-'+j,queryBtnParam[j]);
+						 	}
+					}
+					loadLists(tableNode,false,false,callback);
+			});	
+	}
+
+//列表事件:全选
+	function tableRowSelectAll(tableNode,callback){
+			$(tableNode).on('click','.table-list .table-checkall',function(){
+					var self = this;
+					$(tableNode.querySelectorAll('.table-checkbox input')).each(function(){
+							this.checked=self.checked;
+					});
+					typeof callback == 'function' ? callback( tableNode ): false;
+			});
+	}
+
+//列表事件:表格行选中
+	function tableRowSelect(tableNode,callback){
+			$(tableNode).on('click','.table-list .list-trow',function(){
+						if(this.classList.contains('on')){
+								this.classList.remove('on');
+						}else{ 
+							    $('.list-trow').each(function(){this.classList.remove('on');});
+								this.classList.add('on');
+						}
+						typeof callback == 'function' ? callback( tableNode ): false;
+			});
+	}
+//列表事件：页码选项
+	function tablePageSelect(tableNode,callback){ 
+			$(tableNode).on('click','.table-pagination .paging',function(){
+					var page = 1;
+					try{
+						page = this.getAttribute('data-page');
+					}catch(e){}
+					loadLists(tableNode,page,false,callback);
+			});
+	}
+//列表事件:分页条数选项
+	function tableLimitOption(tableNode,callback){
+			$(tableNode).on('click','.table-pagination .dropdown-toggle',function(){
+					var dropup = this.parentNode;
+					if(this.classList.contains('active')){
+						this.classList.remove('active');dropup.classList.remove('active');
+					}else{
+						this.classList.add('active');dropup.classList.add('active');
+					}
+			});
+			$(tableNode).on('click','.dropdown-list li',function(){
+					var limit=this.textContent;
+						loadLists(tableNode,1,limit,callback);
+			});
+	}
+
+	/* 加载列表
+	 * tableNode querySelector选择的节点对象
+	*/
+	function loadLists(tableNode,page,limit,callback){
+			var tableNode = tableNode || {};
+			if(!$.isEmptyObject(tableNode)){
+					var url 	  = tableNode.getAttribute('data-url');
+					var tableData = tableNode.querySelector('.table-list') || {};
+					var d = {};
+					if( !$.isEmptyObject(tableData) ){
+							d = $(tableData).queryParam();
+							d['query'] = $(tableData).queryParam('query');
+					}
+					d['init'] = $(tableNode).queryParam('init'); 
+					if(page  && typeof page !='undefined'){
+							d['page'] = page;
+					}
+					if(limit  && typeof limit !='undefined'){
+							d['limit'] = limit;
+					}
+					var loading = $.loading().open();
+					setTimeout(function(){
+						$.ajaxHtml(url,d,true,function(html){
+								$( tableNode ).html( html );
+								tableRowSelect(tableNode,callback);
+								tableRowSelectAll(tableNode,callback);
+								tablePageSelect(tableNode,callback);
+								tableLimitOption(tableNode,callback);
+								tablePopups(tableNode,callback);
+								tableClick(tableNode,callback);
+								querySearch(tableNode,callback);
+								typeof callback == 'function' ? callback( tableNode ): false;
+								loading.close();
+						});
+					},500);
+			}
+	}
+	window.reLoadList = loadLists;
+	window.popupsCloseReload = popupsCloseReload;
+})(model);
+</script>

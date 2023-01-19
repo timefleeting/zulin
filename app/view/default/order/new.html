@@ -1,0 +1,500 @@
+<?php 
+$uuid  = 0;
+$title = "我要下单";
+echo V('common','popups_head',0,$title); 
+$classifyList = C('classify','chooserList');
+$warehouseList = C('warehouse','chooserList');
+?>
+<style>
+ .userInfo{background-color: #F8F8F8;padding:0.5rem 0;}
+ .userInfo>div{padding:0.3rem 0;}
+ .userInfo .item-title{font-weight:bold;font-size:0.7rem;}
+ .liveArea{background-color:#fcfcfc;}
+ .stock-table{width:100%;margin-top:0.5rem;border-bottom:1px solid #dddddd;border-spacing:0;border-radius:1px;}
+ .stock-table th{padding: 0.5rem 0.5rem;font-size:0.9rem;border:1px solid #dddddd;background-color:#F8F8F8;}
+ .stock-table td{padding: 0.5rem 0.5rem;border: 1px solid #dddddd;text-align:center;font-size:0.8rem;}
+ .stock-table .no-record {text-align: center;padding-top: 0.5rem;padding-bottom: 0.5rem;font-size: 1rem;color: #8c8c8c;}
+ .stock-table .theWarehouse{color:blue;}
+ .stock-table .theWarehouse:hover{cursor:pointer;}
+ .form-content .item-row{margin-top:0.5rem;}
+ .form-content .form-item .order-way>div{margin-right:1rem;}
+ .form-content .form-item .order-way input{height:1.3rem;width:1.5rem;}
+</style>
+<div class="form-content order">
+
+		<div class="trow form-item">
+				<div class="tcell w50">
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>设备类目:</span></div>
+							<div class="tcell item-content">
+									<select class="form-control device-classify" param-key="classify">
+										<?php if( !empty( $classifyList ) ): foreach( $classifyList as $key => $val ): ?>
+											<option value="<?php echo $val['uuid'];?>" ><?php echo $val['name'];?></option>
+										<?php endforeach; ?>
+									    <?php else: ?>
+									    	<option value="0">暂无类目,请先添加类目</option>
+										<?php endif; ?>
+									</select>
+							</div>
+						</div>
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>租期开始时间:</span></div>
+							<div class="tcell item-content">
+									<input class="form-control rationStartTime" id="rationStartTime" param-key="rationStartTime" placeholder="请选择开始时间[00:00]"  readonly>
+							</div>
+						</div>
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>租期结束时间:</span></div>
+							<div class="tcell item-content">
+									<input class="form-control rationEndTime" id="rationEndTime" param-key="rationEndTime" placeholder="请选择结束时间[23:59]"  readonly>
+							</div>
+						</div>
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>提货时间:</span></div>
+							<div class="tcell item-content">
+								<input class="form-control deliveryTime" id="deliveryTime" param-key="deliveryTime" placeholder="请选择提货时间"  readonly />
+							</div>
+						</div>
+				</div>
+				<div class="tcell w50">
+						
+						<div class="trow item-row">
+							<div class="tcell item-title"><span style="font-weight:bold">承租</span><span>设备数量:</span></div>
+							<div class="tcell item-content">
+								<div class="deviceNum"></div>
+							</div>
+						</div>
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>发货占时(天):</span></div>
+							<div class="tcell item-content">
+									<div class="beginPreday"></div>
+							</div>
+						</div>
+						
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>回库占时(天):</span></div>
+							<div class="tcell item-content">
+									<div class="endPreday"></div>
+							</div>
+						</div>
+						<div class="trow item-row">
+							<div class="tcell item-title"><span>提货仓库:</span></div>
+							<div class="tcell item-content">
+									<select class="form-control device-warehouse" param-key="warehouse">
+											<?php if( !empty( $warehouseList ) ): foreach( $warehouseList as $key => $val ): ?>
+												<option value="<?php echo $val['uuid'];?>" ><?php echo $val['name'];?></option>
+											<?php endforeach; ?>
+										    <?php else: ?>
+										    	<option value="0">暂无仓库,请先添加仓库</option>
+											<?php endif; ?>
+									</select>
+							</div>
+						</div>
+				</div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>提货方式:</span></div>
+			<div class="tcell item-content" style="width:30%;">
+					<div class="frow order-way">
+							<div class="frow">
+								<input type="radio" name="way" value="0" class="form-control" data-type="radio" param-key="way" checked=true />自提
+							</div>
+							<div class="frow">
+								<input type="radio" name="way" value="1" class="form-control" data-type="radio" param-key="way" />快递上门
+							</div>
+					</div>
+
+			</div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>用户信息:</span></div>
+			<div class="tcell item-content" style="width:80%;">
+					<div class="userInfo">
+						<div class="trow">
+							<div class="tcell w30 textcenter item-title">手机号:</div>
+							<div class="tcell w70"><input class="form-control" param-key="mobile" placeholder="请输入手机号码" value="" /></div>
+					 	</div>
+					 	<div class="trow">
+							<div class="tcell w30 textcenter item-title">联系人:</div>
+							<div class="tcell w70"><input class="form-control" param-key="name" placeholder="请输入联系人" value="" /></div>
+					 	</div>
+					 	<div class="trow">
+							<div class="tcell w30 textcenter item-title">通讯区域:</div>
+							<div class="tcell w70"><div class="liveArea"></div></div>
+					 	</div>
+					 	<div class="trow">
+							<div class="tcell w30 textcenter item-title">通讯地址:</div>
+							<div class="tcell w70"><input class="form-control" param-key="address" placeholder="请输入通讯地址" value="" /></div>
+					 	</div>
+					</div>
+			</div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>库存概况:</span></div>
+			<div class="tcell item-content" style="width:80%;">
+					<table class="stock-table">
+						<thead>
+						<tr>
+							<th width="25%">仓库</th>
+							<th width="15%">总库存</th>
+							<th width="15%">已占库存</th>
+							<th width="15%">库存情况</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody class="device-stock"></tbody>
+					</table>
+			</div>
+			
+		</div>
+
+
+</div>
+<?php echo V('common','popups_footer',array('add'=>array('title'=>'提交','url'=>'{__order/add__}','form'=>array('text'=>'form-control','select'=>'chooser-checked','areaCode'=>'liveArea .chooser-value','adjustNum'=>'adjustNum'),'statusClose'=>1))); ?>
+<script>
+ (function($){
+
+ 	var beginDay=4;
+	var start = {}, end = {};
+ 	$.cssLoader("__ASSETS__/css/jedate.css");
+ 	$.jsLoader("__ASSETS__/js/jedate.js?v={TIME}",function(){
+ 			
+ 			var LinkageStartDate 	= jeDate("#rationStartTime",LinkageStartDate);
+        	var LinkageEndDate 	    = jeDate("#rationEndTime",LinkageEndDate);
+        	var LinkageDeliveryDate = jeDate("#deliveryTime",LinkageDeliveryDate);
+
+
+        	function LinkageStartDate(istag){
+        			var config = {
+            				format:"YYYY-MM-DD",
+			            	isTime:true,
+			            	isShow:true,
+			            	fixed:true,
+			            	minDate: function(that){
+			            		return jeDate.nowDate({DD:"+"+beginDay});
+			            	},
+			            	maxDate: function (that) {
+					            //that 指向实例对象
+					            var endDay_min = jeDate.valText('#rationEndTime') || '';
+					            return endDay_min ? start.maxDate : jeDate.nowDate(365);
+
+					        }, //设定最大日期为当前日期
+					        donefun: function(obj){
+					        	var minTime    =  jeDate.timeStampDate(this.minDate);//最小时间	
+					        	var val = obj.val || ''; 
+					        	if(val!=''&&val!=null){
+					        		var doneTime   = jeDate.timeStampDate( obj.val );  //选择的时间
+						        	if( doneTime < minTime ){
+						        			obj.val = 	jeDate.timeStampDate(minTime,'YYYY-MM-DD');	
+						        			jeDate.valText('#rationStartTime',obj.val);
+						        	}
+					        	}
+						        end.minDate = val; //开始日选好后，重置结束日的最小日期
+					           // jeDate("#rationEndTime",LinkageEndDate(false));
+					           // jeDate("#deliveryTime",LinkageDeliveryDate(false));
+					            updateDate();
+					        }
+            		};
+            		return config;
+        	}
+
+        	function LinkageEndDate(istg) {
+            	var config = {
+            			trigger : istg || "click",
+			            format: 'YYYY-MM-DD',
+			            minDate: function (that) {
+			                //that 指向实例对象
+			                //设默认值
+			                var endinitDate  = end.minDate   || '';
+            				if( endinitDate!=''&&endinitDate!=null ){
+			            			var endDate   = new Date( jeDate.timeStampDate( endinitDate )*1000 );
+									var endYear =endDate.getFullYear(),endMonth = endDate.getMonth()+1,endDays = endDate.getDate();
+	            					that.$opts.currShow = {YYYY:endYear,MM:endMonth,DD:endDays};
+	            					/*
+			            			var endDate = new Date( jeDate.timeStampDate( endinitDate )*1000 );
+			            			var nowDate = new Date();
+			            			var endYear =endDate.getFullYear(),endMonth = endDate.getMonth()+1,endDays = endDate.getDate();
+			            			var nowYear = nowDate.getFullYear(),nowMonth = nowDate.getMonth()+1,nowDays= nowDate.getDate();
+			   						var diffYear= endYear-nowYear,diffMonth = endMonth-nowMonth,diffDays = endDays - nowDays;
+			   						diffYear  = diffYear >0  ? "+"+diffYear  : (diffYear<0?diffYear:0);
+			   						diffMonth = diffMonth>0  ? "+"+diffMonth : (diffMonth<0?diffMonth:0);
+			   						diffDays  = diffDays >0  ? "+"+diffDays  : (diffDays<0?diffDays:0);
+			            			var formatDate = {MM:diffMonth,DD:diffDays};
+			            			config['isinitVal'] = true;
+			            			config['initDate']  = [formatDate,true];
+			            			start.maxDate = endinitDate;
+			            			*/	
+            				}
+			                var startDay_max = jeDate.valText('#rationStartTime') || '';
+                			var endMinDate = end.minDate || '';
+            				var minDate = startDay_max ? endMinDate : jeDate.nowDate({DD:"+"+beginDay});
+			            	/*
+			            	if( startDay_max!='' && startDay_max!=null && minDate !='' && minDate != null ){
+			                		jeDate.valText('#rationEndTime',jeDate.timeStampDate(jeDate.timeStampDate(minDate),'YYYY-MM-DD'));
+			                }
+			                */
+			            	return minDate;
+			            }, //设定最小日期为当前日期
+			            maxDate: '2099-06-16 23:59:59', //设定最大日期为当前日期
+			            donefun: function(obj){
+			            	//不能大于开始时间
+			            	var startDay_max = jeDate.valText('#rationStartTime') || '';
+			            	var val = obj.val || ''; 
+			            	if(startDay_max!='' && val!='' ){
+			            			var starttime = new Date(startDay_max).getTime();
+			            			var valtime   = new Date(val).getTime(); 
+			            			if(valtime<starttime){
+			            					val = startDay_max;
+			            			}
+			            	}
+			                start.maxDate = val; //将结束日的初始值设定为开始日的最大日期
+			                jeDate.valText('#rationEndTime',val);
+			                updateDate();
+			            }	
+            	};
+		        return config;  
+		    }
+
+		    function LinkageDeliveryDate(istg){
+		    		var config = {
+		    				trigger : istg || "click",
+		    				format:"YYYY-MM-DD hh:mm",
+			            	isTime:true,
+			            	isShow:true,
+			            	fixed:true,
+			            	minDate: function (that) { 
+				                //that 指向实例对象
+				                var startDay_max = jeDate.valText('#rationStartTime') || ''; //
+				            	if(startDay_max==''||startDay_max==null){
+				            			return startDay_max ? end.minDate : jeDate.nowDate({DD:0});
+				            	}else{
+				            		/*设默认日期展示*/
+				            		var startTime = jeDate.timeStampDate( startDay_max );
+				           			var endDate   = new Date(startTime*1000);
+									var endYear =endDate.getFullYear(),endMonth = endDate.getMonth()+1,endDays = endDate.getDate();
+	            					that.$opts.currShow = {YYYY:endYear,MM:endMonth,DD:endDays};
+
+				            		//开始时间不为空,提货时间为开始时间-发货占时
+				            		var startTime = jeDate.timeStampDate( startDay_max );
+				            		var beginTime = startTime - parseInt(beginDay) * 3600 *24;
+				            		var beginDate  = jeDate.timeStampDate( beginTime );
+			   						return beginDate;
+				            	}
+				            	
+					        }, //设定最小日期为当前日期,
+			            	maxDate: function (that) {
+					            //that 指向实例对象
+					            var endDay_min = jeDate.valText('#rationEndTime') || '';
+								return endDay_min ? start.maxDate : jeDate.nowDate(365);
+					        }, //设定最大日期为当前日期
+					        donefun: function(obj){
+					            var startDay_max = jeDate.valText('#rationStartTime') || '';
+					            var val = obj.val || '';
+						            if(startDay_max!='' && val!='' ){
+				            			//var starttime = new Date(startDay_max).getTime();
+				            			var startTime = jeDate.timeStampDate( startDay_max );
+				            			var beginTime = startTime - parseInt(beginDay) * 3600 *24; //零点时间戳
+				            			var valTime   = jeDate.timeStampDate( val );
+				            			var nowDate = new Date(),
+				            				nowHour = nowDate.getHours(),
+				            				nowMin  = nowDate.getMinutes(),
+				            				nowSeconds = nowDate.getSeconds();
+				            			var nowTime = nowHour*60*60+nowMin*60+nowSeconds;
+				            			if(valTime<beginTime){
+				            					val = jeDate.timeStampDate(beginTime + nowTime,'YYYY-MM-DD hh:mm');
+				            			}
+					            	}
+					                jeDate.valText('#deliveryTime',val);
+					        }
+		    		};
+		    		return config;
+		    }
+		    function digit(num) {
+            		return num < 10 ? "0" + (num | 0) :num;
+        	}
+
+ 	});
+
+ 	$.jsLoader("__ASSETS__/js/cn_city_area.js?v={TIME}",function(){
+ 		$.jsLoader("__ASSETS__/js/chooser.js?v={TIME}",function(){
+ 			var preday={},oneData={};
+ 				for(var i = 0; i<=10; i++){
+ 						preday[i] = {'text':i,'value':i};
+ 				}
+ 				for(var i = 1; i<=10; i++){
+ 						oneData[i] = {'text':i,'value':i};
+ 				}
+ 			chooser(".deviceNum",{
+					data:oneData,
+					layer:1,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:[{value:1,text:1}],
+					updateCallback:updateNum,
+			});
+			chooser(".beginPreday",{
+					data:preday,
+					layer:1,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:[{value:4,text:4}],
+					updateCallback:beginUpdateNum,
+			});
+			chooser(".endPreday",{
+					data:preday,
+					layer:1,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:[{value:4,text:4}],
+					updateCallback:updateNum,
+			});
+			chooser(".liveArea",{
+					data:cityArea,
+					layer:3,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:[{value:350000,text:'福建省'},{value:350100,text:'福州市'},{}]
+			});
+ 		});
+ 	});
+
+ 	$.ready(function(){
+ 			updateStock();
+ 	});
+
+ 	function beginUpdateNum(){
+ 			try{
+ 				beginDay = $('.beginPreday .chooser-value-1')[0].value;
+ 			}catch(e){}
+ 			jeDate.valText('#rationStartTime','');
+ 			jeDate.valText('#rationEndTime','');
+ 			start={};
+ 			end  ={};
+ 			updateStock();
+ 	}
+
+ 	function updateNum(){
+ 			updateStock();
+ 	}
+ 	function updateDate(){
+ 			jeDate.valText('#deliveryTime','');
+ 			updateStock();
+ 	}
+
+ 	function updateStock(reload){
+ 			var notice='',classify='',warehouse='',deviceNum=1,rationStartTime='',rationEndTime='',beginPreday=0,endPreday=0,adjust={};
+ 				try{
+ 					classify  		= $('.device-classify')[0].value;
+ 					warehouse 		= $('.device-warehouse')[0].value;
+ 					deviceNum 		= $('.deviceNum .chooser-value-1')[0].value;
+ 					rationStartTime = $('#rationStartTime')[0].value;
+ 					rationEndTime   = $('#rationEndTime')[0].value;
+ 					beginPreday	    = $('.beginPreday .chooser-value-1')[0].value;
+ 					endPreday	    = $('.endPreday .chooser-value-1')[0].value;
+ 					if(reload==1){
+ 								adjust = $('.adjustNum').formData();
+ 					}
+ 				}catch(e){}
+ 				if(!classify){
+ 					notice = '请选择设备类目';
+ 				}else if(!warehouse){
+ 					notice = '请选择提货仓库';
+ 				}else if(!deviceNum){
+ 					notice = '请选择设备数量';
+ 				}else if(!rationStartTime){
+ 					notice = '请选择租期开始时间';
+ 				}else if(!rationEndTime){
+ 					notice = '请选择租期结束时间';
+ 				}else{
+ 					notice ='';
+ 				}
+ 			if( notice != '' ){
+ 				notice = '<tr><td class="no-record" colspan="5">'+notice+'</td></tr>';
+ 				$('.device-stock').html(notice);
+ 			}else{
+ 				$('.device-stock').html('');
+ 				var url = "{__orderProduct/productTimes__}",d={};
+ 				d['classify'] = classify;
+ 				d['warehouse']= warehouse;
+ 				d['deviceNum']= deviceNum;
+ 				d['rationStartTime'] = rationStartTime;
+ 				d['rationEndTime']   = rationEndTime;
+ 				d['beginPreday']     = beginPreday;
+ 				d['endPreday']       = endPreday;
+ 				d['adjust']  		 = adjust;
+ 				var loading = $.loading().open();
+ 				$.ajax(url,{data:d,type:'post',dataType:'json',timeout:10000,
+ 					success:function(res){ 
+ 						if($.isArrayLike(res)){
+ 							var surplus = 0,surplusMsg='',theWarehouse='',adjustInput='';
+ 								for(var i in res){
+ 									uuid    = res[i].uuid;
+								    surplus = res[i].num - res[i].used;
+								    common  = res[i].common;
+								    main    = res[i].main;
+								    adjustStatus = res[i].adjustStatus || 0;
+								    adjustNum    = res[i].adjustNum || 0;
+								    theWarehouse = '';
+								    adjustInput  = '';
+								    if(main==0&&adjustStatus==1){
+								    	theWarehouse= '<span class="theWarehouse" data-uuid="'+uuid+'" data-maxnum="'+surplus+'" >调仓</span>';	
+								    	adjustInput = '<input class="adjustNum adjustNum-'+uuid+'" type="hidden" value="'+adjustNum+'" param-key="'+uuid+'" />';
+								    }
+								    if(surplus<=0){
+								    	surplusMsg='<span style="color:red;">无库存</span>';
+								    }else{
+								    	surplusMsg='<span style="color:green;">剩余库存'+surplus+'</span>';
+								    }
+									notice += '<tr>\
+										<td>'+res[i].name+'</td>\
+										<td>'+res[i].num+'</td>\
+										<td>'+res[i].used+'</td>\
+										<td>'+surplusMsg+'</td>\
+										<td>'+theWarehouse+adjustInput+'<span class="common common-'+uuid+'">'+common+'</span></td>\
+										</tr>';
+ 								}
+ 						}else{
+ 							notice = '<tr><td class="no-record" colspan="5">并无有效仓库</td></tr>';	
+ 						}
+ 						$('.device-stock').html(notice);
+ 						loading.close();
+ 						/*事件:添加调仓*/
+ 						$('.stock-table').on('click','.theWarehouse',function(){
+ 								var adjustNum = prompt('请输入调仓数量');
+ 								var uuid  = this.getAttribute('data-uuid');
+ 								var maxnum= this.getAttribute('data-maxnum');
+ 								adjustNum = parseInt( adjustNum );
+ 								maxnum    = parseInt( maxnum );
+			 					if( adjustNum!==0 && isNaN(adjustNum) ){
+			 							return false;
+			 					}
+			 					if(adjustNum > maxnum){
+			 							adjustNum = maxnum;
+			 					}
+			 					$('.common-'+uuid).html('数量:'+adjustNum);
+			 					$('.adjustNum-'+uuid)[0].value = adjustNum;
+			 					updateStock(1);
+			 			});
+ 					},
+ 					error:function(xhr){
+ 						notice = '<tr><td class="no-record" colspan="5">网络异常请刷新重试</td></tr>';
+ 						$('.device-stock').html(notice);
+ 						loading.close();	
+ 					}
+ 				});
+ 			}
+ 			
+ 	}
+
+ 	$('.order').on('change','.device-classify',function(){
+ 			updateStock();
+ 	});
+ 	$('.order').on('change','.device-warehouse',function(){
+ 			updateStock();
+ 	});
+
+ })(model);
+</script>

@@ -1,0 +1,340 @@
+<?php
+$action = basename(dirname(__FILE__));
+$_page   	= Q('page');
+$_limit  	= Q('limit');
+$query   	= Q('query');
+$listData 	= C( $action,'orderlists',$_page,$_limit,$query ); 
+$lists     	= isset( $listData['lists'] ) ? $listData['lists'] : false;
+$count 		= isset( $listData['count'] ) ? $listData['count'] : 0;
+$limit 		= isset( $listData['limit'] ) ? $listData['limit'] : $_limit;
+$page  		= isset( $listData['page']  ) ? $listData['page']  : $_page;
+$pageHtml 	= page($page, $count, $limit);
+$optionNav  = C('navigate','navFields','order','index',3);
+$queryParam = "";
+if( !empty( $query )){
+	if(is_array($query)){
+		foreach( $query as $key => $val ){
+			$queryParam .= ' query-'.$key.'="'.$val.'"';
+		}
+	}else{
+		$queryParam = 'query-param="'.$query.'"';
+	}	
+}
+
+$exceptionStatus = C('order','exceptionStatus');
+/*订单项目排序*/
+function productSort( $arr, $worsehouse=false ){
+        if( empty( $arr ) || !is_array( $arr ) )
+            return false;
+        
+        $aArr = array();
+        $bArr = array();
+        foreach( $arr as $key => $item_val ){
+                $item_val   = str_replace( array("\t","\r","\n"),'',trim($item_val) ); 
+                $item = json_decode( $item_val,true);
+                if(empty($item))
+                            continue;
+                $productArr[] = $item;
+                if( !empty( $worsehouse ) && $worsehouse==$item['targetWh'] ){
+                        $aArr[$worsehouse][] = $item;
+                        continue;
+                }
+                $bArr[$item['targetWh']][] = $item;
+        }
+
+        $data = array();
+        if( !empty( $aArr )){
+            foreach( $aArr as $key => $val ){
+                foreach( $val as $k=>$v ){
+                    $data[] = $v;
+                }
+            }
+        }
+         if( !empty( $bArr )){
+            foreach( $bArr as $key => $val ){
+                foreach( $val as $k=>$v ){
+                    $data[] = $v;
+                }
+            }
+        }
+
+        return $data;
+}
+
+?>
+<style>
+.table-list>thead>tr>th{text-align:center;}
+.table-list .order-classify,.table-list .order-warehouse{font-weight:bold;}
+.table-list .order-num{color:#8c8c8c;}
+.table-list .order-diff-num{color:red; margin-left:0.5rem;}
+.table-list .order-diff-num .table-btn{margin-left:0.5rem;}
+.table-list .delivery-time{font-weight:bold;}
+.table-list .order-item{width:100%;margin-top:0.2rem;border-bottom:1px solid #dddddd;border-spacing:0;border-radius:1px;text-align:center;}
+.table-list .order-item th{padding: 0.2rem 0.5rem;font-size:0.8rem;border:1px solid #dddddd;background-color:#F8F8F8;}
+.table-list .order-item td{padding: 0.2rem 0.5rem;border: 1px solid #dddddd;font-size:0.7rem;}
+.table-list .order-price{text-align:center;}
+.table-list .order-status{text-align:center;}
+.table-list .table-btn{margin-right:0.2rem;margin-top:0.1rem;margin-bottom:0.1rem;}
+.table-list .order-status{font-weight:bold;}
+.table-list .order-way{margin-left:1rem;font-weight:bold;}
+</style>
+<table class="table-list textleft" param-page="<?php echo $page;?>" param-limit="<?php echo $limit;?>" <?php echo $queryParam;?>>
+    <thead>
+    <tr>
+        <th style="width:2%"><input type="checkbox" class="table-checkall textmiddle" value='0'/></th>
+        <th style="width:12%">单号</th>
+        <th style="width:12%">客户信息</th>
+        <th style="width:12%">凭租时间</th>
+        <th style="width:32%">
+        	<div>设备信息</div>
+        	<div>
+        		<table class="order-item">
+						<thead>
+						<tr>
+							<th width="28%">仓库</th>
+							<th width="28%">设备</th>
+							<th width="16%">价格</th>
+							<th width="24%">状态</th>
+						</tr>
+						</thead>	
+				</table>
+        	</div>
+        </th>
+        <th style="width:5%">金额</th>
+        <th style="width:10%">订单状态</th>
+    	<th style="">操作</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <?php if(!empty( $lists )): 
+    		foreach( $lists as $key => $rows ):
+    			$flagStatus = 0;    //根据订单产品的状态标记
+    ?>
+    <tr class="list-trow">
+        <td class="table-checkbox">
+            <input type="checkbox" value='<?php echo isset( $rows["orderSn"] ) ? $rows["orderSn"] : false; ?>'/>
+        </td>
+        <td>
+        	<div class="order-classify">
+	        		<span>设备类型:</span>
+	        		<span><?php echo $rows['classifyName'];?></span>
+	        </div>
+	   
+        	<div class="order-sn">
+        		<span>订单编号:</span>
+        		<span><?php echo $rows['orderSn'];?></span>
+        	</div>
+        	<div class="order-time">
+        		<span>下单时间:</span>
+        		<span><?php echo date('Y-m-d H:i',$rows['ctime']);?></span>
+        	</div>
+        	<div class="order-account">
+        		<span>下单人员:</span>
+	        	<span><?php echo $rows['accountName'];?></span>
+        	</div>
+        </td>
+        <td>
+        	<div>
+        		<div class="frow">
+        		<div class="user-name"><?php echo $rows['userName'];?></div>
+        		<div class="user-mobile"><?php echo $rows['userMobile'];?></div>
+        		</div>
+        		<div class="frow user-areas frow-wrap">
+        				<div><?php echo $rows['provinceName'];?></div>
+        				<div><?php echo $rows['cityName'];?></div>
+        				<div><?php echo $rows['areaName'];?></div>
+        		</div>
+        		<div class="user-address"><?php echo $rows['address'];?></div>
+        	</div>
+        </td>
+        <td>
+        	<div>
+        		<div class="ration-start">
+        			<span>开始时间:</span>
+        			<span><?php echo date('Y-m-d',$rows['rationStartTime']);?></span>
+        		</div>
+        		<div class="ration-end">
+        			<span>结束时间:</span>
+        			<span><?php echo date('Y-m-d',$rows['rationEndTime']);?></span>
+        		</div>
+                <?php if( !empty( $rows['pretime'] )): ?>
+                <div class="pretime">
+                    <span>发货占时:</span>
+                    <span><?php echo ceil($rows['pretime']/3600/24).'天';?></span>
+                </div>
+                <?php endif; ?>
+                <?php if( !empty( $rows['backtime'] ) ): ?>
+                <div class="pretime">
+                    <span>回库占时:</span>
+                    <span><?php echo ceil($rows['backtime']/3600/24).'天' ;?></span>
+                </div>
+                <?php endif; ?>
+        	</div>
+        </td>
+        <td> 
+        	<?php if( $rows['state11'] >0 || $rows['state12'] > 0 ){ $flagStatus=2;} ?>
+             <div class="delivery-time">
+                    <span>提货时间:</span>
+                    <span><?php echo date('Y-m-d H:i',$rows['deliveryTime']);?></span>
+            </div>
+        	<div class="frow">
+                    <div class="order-warehouse">
+	                    <span>提货仓库:</span>
+	                    <span><?php echo $rows['warehouseName'];?></span>
+                    </div>
+                     <div class="order-way">
+	                    <span>提货方式:</span>
+	                    <span><?php echo $rows['way']==1?'快递上门':'自提';?></span>
+                    </div>
+            </div>
+
+        	<div class="frow">
+        		<?php $diffNum = $rows['opNum']-$rows['num']; ?>
+        		<?php if( $diffNum < 0 && $rows['status']==1 ): ?>
+	        	<div class="order-num">
+	        		<span>下单数量:</span>
+	        		<span><?php echo $rows['num'];?></span>
+	        	</div>
+	        	<div class="order-diff-num frow">
+	        		<div>需补仓:</div>
+	        		<div><?php echo abs($diffNum);?></div>
+	        		<div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/fillup__}" win-width="80%" win-height="80%" win-top="10%" win-left="10%">
+                        <i class="iconfont">&#xe615;</i><span>补仓</span>
+                	</div>
+	        	    
+                    <div class="table-btn click-url" click-url="{__order/fillupRefresh__}"  param-orderSn="<?php echo $rows['orderSn'];?>" title="刷新补仓" >
+                        <i class="iconfont">&#xe640;</i><span>刷新</span>
+                    </div>
+
+	        	</div>
+	        	<?php endif; ?>
+	        </div>
+        	<div>
+        		<table class="order-item">
+						<tbody class="item-content">
+							<?php 
+			        			$itemData = explode('&&&&',$rows['item_data']); 
+			        			$itemData = productSort( $itemData,$rows['warehouse'] );
+			   					foreach( $itemData as $key => $item ): 
+						        	if(empty($item))
+						        				continue;
+						        	$adjustBtn = "调仓";
+			        		?>
+		        			<tr>
+		        					<td class="word-break" width="28%"><div><?php echo $item['targetWhName'];?></div><?php if($item['warehouse']!=$item['targetWh']):?><div style="color:#8c8c8c;font-size:0.7rem;"><span>所属仓:</span><span><?php echo $item['warehouseName'];?></span></div><div style="color:#8c8c8c;font-size:0.6rem;"><?php if($item['targetWhStatus']==0){$adjustBtn="正在调仓";}?></div><?php endif;?></td>
+		        					<td class="word-break" width="28%"><div><?php echo $item['name'];?></div><div style="color:#8c8c8c;font-size:0.7rem;"><span><?php echo $item['barcode'];?></span></div></td>
+		        					<td width="16%"><?php echo $item['price']/100;?></td>
+		        					<td width="24%">
+		        						<div>
+		        							<?php $dstatusMsg = C('device','deviceStatus',$item['dstatus'],$rows['way'] ); ?>
+		        							<?php if( $item['dstatus']==1 ): ?>
+		        								<span><?php echo $dstatusMsg;?></span>
+		        							<?php else:  $flagStatus=1 ?>
+		        								<span style="color:red"><?php echo $dstatusMsg;?></span>
+		        							<?php endif; ?>
+		        						</div>
+
+
+		        						<?php if( C('order','beBackStatus',$item['ostatus'] )==true ): ?>
+		        						
+		        						<?php if( $item['targetWh'] != $rows['warehouse'] || ($item['targetWh'] == $rows['warehouse'] && $item['targetWhStatus']==0 ) ): ?>
+		        							<div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" param-device="<?php echo $item['device'];?>" popups-url="{__order/adjustWarehouse__}" win-width="80%" win-height="80%" win-top="10%" win-left="10%" >
+                        						<i class="iconfont">&#xe615;</i>
+                        						<span><?php echo $adjustBtn;?></span>
+                							</div>
+		        						<?php endif; ?>
+		        						
+		        						<?php endif; ?>
+
+
+		        					</td>
+		        			</tr>
+		        		    <?php endforeach; ?>
+						</tbody>
+				</table>
+        	</div>
+        </td>
+        <td>
+        	<div class="order-price"><?php echo $rows['amountPayable']/100;?></div>
+        </td>
+        <td class="order-status">
+        	<?php if( $rows['status']==1 ):
+        			$flagStateSpan = "";
+        			if( in_array($rows['ostatus'],$exceptionStatus) || $flagStatus==1 ):
+        					$flagStateSpan = '<span style="color:red;font-size:1rem">异常</span>';
+        			endif; 
+        			if( $flagStatus ==2 ):
+        					$flagStateSpan = '<span style="color:red;font-size:1rem">需调仓</span>';
+        			endif;
+        	?>
+
+        			<div>
+        				<?php echo $flagStateSpan;?>
+        				<span><?php echo C('order','deviceStatus',$rows['ostatus'],$rows['way']);?></span>
+        			</div>
+        	
+        	<?php else: ?>
+        			<div><?php echo C('order','orderStatus',$rows['status']);?></div>
+        	<?php endif; ?>
+
+        </td>
+        <td class="">
+        	<div class="frow frow-wrap">
+        	<?php if( $rows['status'] ==1 ): ?>
+        	<?php if( $rows['ostatus']==1 || $rows['ostatus'] ==2 ): ?>
+                <div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/pickup__}" win-width="80%" win-height="80%" win-top="10%" win-left="10%">
+                        <i class="iconfont">&#xe66f;</i><span><?php echo $rows['way']==1?( !empty($rows['pickupStatus']) ?'已发货':'发货'):'提货';?></span>
+                </div>
+
+				<div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/deviceExchange__}" win-width="80%" win-height="80%" win-top="10%" win-left="10%">
+                        <i class="iconfont">&#xe60f;</i><span>设备调换</span>
+                </div>
+                
+                <div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/cancel__}" win-width="50%" win-height="50%" win-top="25%" win-left="25%">
+                        <i class="iconfont">&#xe642;</i><span>取消订单</span>
+                </div>
+        	<?php endif; ?>
+        	<?php if( $rows['ostatus'] ==3 ): ?>
+        		<div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/giveback__}" win-width="80%" win-height="80%" win-top="10%" win-left="10%">
+                        <i class="iconfont">&#xe66f;</i><span>归还</span>
+                </div>
+        	<?php endif; ?>
+        	<?php if( $rows['ostatus'] ==4 ): ?>
+        		<div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/givebackOut__}" win-width="80%" win-height="80%" win-top="10%" win-left="10%">
+                        <i class="iconfont">&#xe66f;</i><span>超期归还</span>
+                </div>
+        	<?php endif; ?>
+
+        	<?php if( ($rows['ostatus']==5||$rows['ostatus']==6) ): ?>
+        		 <div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/complete__}" win-width="50%" win-height="50%" win-top="25%" win-left="25%">
+                        <i class="iconfont">&#xe644;</i><span>订单完成</span>
+                </div>
+        	<?php endif; ?>
+        	<?php endif; ?>
+
+        		   <div class="table-btn popups-url" param-orderSn="<?php echo $rows['orderSn'];?>" popups-url="{__order/orderLog__}" win-width="50%" win-height="50%" win-top="25%" win-left="25%">
+                        <i class="iconfont">&#xe746;</i><span>跟踪</span>
+                </div>
+
+        	</div>
+
+
+        
+        </td>
+    </tr>
+    <?php endforeach; else: ?>
+    <tr class="list-trow">
+        <td class="no-record" colspan="14"> 暂无记录 </td>
+    </tr>
+    <?php endif; ?>
+    </tbody>
+
+</table>
+
+
+<div class="table-pagination textcenter">
+    <?php echo $pageHtml; ?>
+</div>
+
+

@@ -1,0 +1,118 @@
+<?php 
+	$uuid 	 =  Q('uuid');
+	$infoRes =  C('device','find');
+	$info 	 =  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$title   =  $info['name'];
+	$tabs	 = array();
+	$optionNav = C('navigate','navFields','device','index',3);
+	if( !empty( $optionNav )){
+			foreach( $optionNav as $key => $val ){
+				$tabs[$val['method']] = array('title'=>$val['name'],'url'=>"{__{$val['class']}/{$val['method']}__}");
+			}
+	}
+	$tabsIndex='transfer';
+	echo V('common','popups_head',$uuid,$title,$tabs,$tabsIndex); 
+if( !empty( $info )):
+	$statusList    = C('deviceTranfer','deviceStatus');
+	$transfer      = C('deviceTranfer','findDevice',$uuid); 
+	$tracking      = isset( $transfer['dstatus'] ) && $transfer['dstatus']==0 ? $transfer['tracking'] : '';
+
+	$fromWarehouseName  = isset( $transfer['fromWarehouseName'] ) ? $transfer['fromWarehouseName'] : '';
+	$toWarehouseName 	= isset( $transfer['toWarehouseName'] )   ? $transfer['toWarehouseName'] : '';   
+?>
+
+<div class="form-content">
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>所属仓:</span></div>
+			<div class="tcell item-content">
+				 <?php echo $info['warehouseName'];?>	
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>当前仓:</span></div>
+			<div class="tcell item-content">
+				 <span><?php echo $info['targetWhName']; ?><span>
+				 <?php if( isset( $transfer['dstatus'] ) && $transfer['dstatus']==0 ):?>
+				 	<span style="color:#8c8c8c;font-size:0.8rem;">正在调仓</span>
+				 <?php endif; ?>	
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>调整至:</span></div>
+			<div class="tcell item-content">
+				<?php if(isset( $transfer['dstatus'] ) && $transfer['dstatus'] ==0): ?>
+					<div class="frow">
+				 		<div style="margin-right:0.5rem;color:red;"><?php echo $fromWarehouseName;?></div>
+				 		<div style="color:#8c8c8c;">调整到</div>
+				 		<div style="margin-left:0.5rem;color:red;"><?php echo $toWarehouseName;?></div>
+				 	</div>
+				<?php else: $warehouseList = C('warehouse','chooserList'); ?>
+					<select class="form-control" param-key="warehouse">
+							<?php if( !empty( $warehouseList ) ): foreach( $warehouseList as $key => $val ): ?>
+								<option value="<?php echo $val['uuid'];?>" ><?php echo $val['name'];?></option>
+							<?php endforeach; ?>
+						    <?php else: ?>
+						    	<option value="0">暂无仓库,请先添加仓库</option>
+							<?php endif; ?>
+					</select>
+				<?php endif; ?>
+					
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>运单号:</span></div>
+			<div class="tcell item-content">
+				 <input type="text" class="form-control" param-key="tracking" placeholder="如有运单号,请填写对应运单号" value="<?php echo $tracking;?>"  />	
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>调仓备注:</span></div>
+			<div class="tcell item-content">
+				 <textarea class="form-control" param-key="descript" placeholder="请输入调仓备注最多120字" value="" ></textarea>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>调仓状态:</span></div>
+			<div class="tcell item-content">
+				<select class="form-control" param-key="dstatus">
+					<?php if( !empty( $statusList )): foreach( $statusList as $key => $val ): ?>
+						<option value="<?php echo $key;?>"><?php echo $val;?></option>
+					<?php endforeach; endif; ?>
+				</select>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		
+</div>
+<?php endif; ?>
+<?php echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__deviceTranfer/addition__}','statusClose'=>1,'where'=>array('uuid'=>$uuid)))); ?>
+<script>
+ (function($){
+ 	/*
+ 	$.cssLoader("__ASSETS__/css/jedate.css");
+ 	$.jsLoader("__ASSETS__/js/jedate.js?v={TIME}",function(){
+ 			jeDate("#buyerTime",{
+            	format:"YYYY-MM-DD hh:mm",
+            	isTime:true,
+            	isShow:true,
+            	fixed:true,
+            	minDate:"2010-01-01 00:00:00",
+            	//maxDate: jeDate.nowDate({DD:0}), //设定最大日期为当前日期
+        	})
+ 	});
+ 	*/
+ })(model);
+</script>
+

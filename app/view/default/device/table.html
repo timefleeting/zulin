@@ -1,0 +1,81 @@
+<?php
+$_page   	= Q('page');
+$_limit  	= Q('limit');
+$query   	= Q('query');
+$listData 	= C( 'device','lists',$_page,$_limit,$query ); 
+$lists     	= isset( $listData['lists'] ) ? $listData['lists'] : false;
+$count 		= isset( $listData['count'] ) ? $listData['count'] : 0;
+$limit 		= isset( $listData['limit'] ) ? $listData['limit'] : $_limit;
+$page  		= isset( $listData['page']  ) ? $listData['page']  : $_page;
+$pageHtml 	= page($page, $count, $limit);
+$optionNav  = C('navigate','navFields','device','index',3);
+$queryParam = "";
+if( !empty( $query )){
+	if(is_array($query)){
+		foreach( $query as $key => $val ){
+			$queryParam .= ' query-'.$key.'="'.$val.'"';
+		}
+	}else{
+		$queryParam = 'query-param="'.$query.'"';
+	}	
+}
+?>
+
+<table class="table-list textleft" param-page="<?php echo $page;?>" param-limit="<?php echo $limit;?>" <?php echo $queryParam;?>>
+    <thead>
+    <tr>
+        <th style="width:5%"><input type="checkbox" class="table-checkall textmiddle" value='0'/></th>
+        <th style="width:10%">设备名称</th>
+        <th style="width:10%">设备编号</th>
+        <th style="width:8%">元/天</th>
+        <th style="width:10%">所属类目</th>
+        <th style="width:10%">所属仓库</th>
+        <th style="width:10%">当前仓库</th>
+        <th style="width:6%">流转状态</th>
+        <th style="width:8%">采购时间</th>
+        <th style="width:5%">排序</th>
+        <th style="width:5%">状态</th>
+        <th style="">操作</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <?php if(!empty( $lists )): foreach( $lists as $key => $rows ):
+    ?>
+    <tr class="list-trow">
+        <td class="table-checkbox">
+            <input type="checkbox" value='<?php echo isset( $rows["uuid"] ) ? $rows["uuid"] : false; ?>'/>
+        </td>
+        <td><?php echo $rows['name'];?></td>
+        <td><?php echo $rows['barcode'];?></td>
+        <td><?php echo $rows['price']/100;?></td>
+        <td><?php echo $rows['classifyName'];?></td>
+        <td><?php echo $rows['warehouseName'];?></td>
+        <td><?php echo $rows['targetWhName'];?></td>
+        <td><?php echo $rows['targetWhStatus']==0?'正在调仓':'正常';?></td>
+        <td><?php echo !empty($rows['buyerTime'])?date('Y-m-d H:i:s',$rows['buyerTime']):'--';?></td>
+        <td><?php echo $rows['sort'];?></td>
+        <td><?php echo C('device','deviceStatus',$rows['status']);?></td>
+        <td class="">
+            <?php if( !empty( $optionNav )): foreach( $optionNav as $key => $val ): ?>
+                    <div class="table-btn popups-url" param-uuid="<?php echo $rows['uuid'];?>" popups-url="{__<?php echo $val['class'].'/'.$val['method'];?>__}">
+                        <i class="iconfont"><?php echo $val['icon'];?></i><span><?php echo $val['name'];?></span>
+                    </div>
+            <?php endforeach; endif; ?>
+        </td>
+    </tr>
+    <?php endforeach; else: ?>
+    <tr class="list-trow">
+        <td colspan="12" class="no-record"> 暂无记录 </td>
+    </tr>
+    <?php endif; ?>
+    </tbody>
+
+</table>
+
+
+<div class="table-pagination textcenter">
+    <?php echo $pageHtml; ?>
+</div>
+
+

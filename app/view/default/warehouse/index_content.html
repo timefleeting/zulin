@@ -1,0 +1,31 @@
+<div class="lists-content">
+		<div class="lists-head">
+				<h3>设备仓库管理</h3>
+		</div>
+		<div class="lists-option frow">
+				<?php 
+					$optionNav = C('navigate','navFields','warehouse','index',2);
+					if( !empty( $optionNav )):foreach( $optionNav as $key => $val ): ?>
+						<div class="option-btn popups-url" popups-url="{__<?php echo $val['class'].'/'.$val['method'];?>__}">
+	                		<i class="iconfont"><?php echo $val['icon'];?></i><span><?php echo $val['name'];?></span>
+            			</div>	
+				<?php endforeach; endif; ?>
+				<div class="frow lists-query">
+				<div>
+					 <select class="query-control" param-key="keyfield" >
+					 	<option value="name">仓库名称</option>
+					 	<option value="provinceName">省</option>
+					 	<option value="cityName">市</option>
+					 	<option value="areaName">区</option>
+					 </select>
+				</div>
+				<div>
+					 <input class="query-control" param-key="keyword" type="text" placeholder="请输入要搜索的内容" />
+				</div>
+				<div class="search-btn">
+					 <button class="query-btn" data-formKey="query-control">确定</button>
+				</div>
+				</div>
+		</div>
+		<div class="lists-table data-table" data-url="{__warehouse/table__}"></div>
+</div>

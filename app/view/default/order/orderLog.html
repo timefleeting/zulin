@@ -1,0 +1,55 @@
+<?php 
+	$orderSn 	=  Q('ordersn');
+	$lists      =  C('orderLog','logLists',$orderSn);
+	$title   	=  '订单追踪';
+	$tabs 	 	=  array();
+	$tabsIndex 	= '';
+	echo V('common','popups_head',$orderSn,$title,$tabs,$tabsIndex); 
+
+		
+?>
+<style>
+ .order-log .item{text-align:center; background:#EBF5FC;margin-bottom:1rem;padding:0.5rem;}
+ .order-log .ctime{font-weight:bold;}
+ .order-log .title{margin-left:1rem;font-weight:bold;margin-right:1rem;}
+ .order-log .logkey,.order-log .logvalue,.order-log .descTip,.order-log .descript{font-size:0.8rem;color:#8c8c8c;}
+ .order-log .accountname{font-size:0.8rem;color:#8c8c8c;}
+</style>
+
+<div class="form-content order-log">
+
+	<?php if( !empty( $lists ) ): foreach( $lists as $key => $val ): ?>
+		<div class="item">
+				<div class="frow">
+				<div class="ctime"><?php echo date('Y-m-d H:i',$val['ctime'] ); ?></div>
+				<div class="title"><?php echo $val['title']; ?></div>
+				<div class="accountname">操作人员: <?php echo $val['accountName']; ?></div>
+				</div>
+				<?php if( !empty( $val['logValue'] ) ): ?>
+				<div class="frow">
+					<div class="logkey"><?php echo $val['logKey'];?>:</div>
+					<div class="logvalue"><?php echo $val['logValue'];?></div>
+				</div>
+				<?php endif; ?>
+
+				<?php if( !empty( $val['descript'] ) ): ?>
+					<div class="frow">
+					<div class="descTip">备注:</div>
+					<div class="descript"><?php echo $val['descript']; ?></div>
+					</div>
+				<?php endif; ?>
+		</div>
+	<?php endforeach;?>
+	<?php else: ?>
+		<div class="item">
+				<div> 暂无跟踪信息记录</div>
+		</div>
+	<?php  endif; ?>
+
+
+</div>
+<?php 
+	echo V('common','popups_footer',array()); 
+?>
+
+

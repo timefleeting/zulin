@@ -1,0 +1,137 @@
+body{background:#fafafa;font-size:100%;}
+
+*, *:before, *:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+::-webkit-scrollbar {/*隐藏滚轮*/
+    display: none;
+}
+.scrollbar::-webkit-scrollbar {/*滚动条整体样式*/
+      max-width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+      max-height: 1px;
+      display:block;
+}
+.scrollbar::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+      border-radius: 10px;
+       -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      background: #535353;
+}
+.scrollbar::-webkit-scrollbar-track {/*滚动条里面轨道*/
+      -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      border-radius: 10px;
+      background: #EDEDED;
+}
+
+@font-face {
+  font-family: 'iconfont';  /* project id 282977 */
+  src: url('//at.alicdn.com/t/font_282977_18syju7g34a.eot');
+  src: url('//at.alicdn.com/t/font_282977_18syju7g34a.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_282977_18syju7g34a.woff') format('woff'),
+  url('//at.alicdn.com/t/font_282977_18syju7g34a.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_282977_18syju7g34a.svg#iconfont') format('svg');
+}
+
+.iconfont{font-family: "iconfont" !important;font-style: normal;-webkit-font-smoothing: antialiased;-webkit-text-stroke-width: 0.2px;-moz-osx-font-smoothing: grayscale;padding: 0 5px;}
+input{width:100%;}
+.w15{width:15%;}
+.w85{width:85%;}
+
+.header-top{height:3.5rem;padding:0.5rem 0rem;background:#373D41;color: #fff;font-size:1.2rem;overflow:hidden;}
+.header-top>div{height:2rem;line-height:2rem;}
+.header-top .header-account{padding-left:0.5rem;padding-right:0.5rem;}
+
+.fullscreen{position:absolute;top:0;right:0;left:0;bottom:0;overflow:hidden;}
+.fullscreen .fullcontent{height:100%;overflow-y:scroll;}
+.fullscreen.hasheader{top:3.5rem;}
+.fullscreen.hasfooter{bottom:3.5rem;}
+.fullscreen.hastabs{top:3.5rem;}
+.fullscreen.hasheader.hastabs{top:7rem;}
+.header{height:3.5rem;padding:0.5rem 0rem;background:#373D41;color: #fff;font-size:1.2rem;overflow:hidden;}
+.header>div{height:2rem;}
+.header img{height:100%;}
+.tabs{height:3.5rem;padding:0rem;background:#ffffff;color: #000000;font-size:1rem;overflow:hidden;}
+.footer{position:absolute;bottom:0;width:100%;height:3.5rem;padding:0.5rem 0rem;background:#ddd;color: #000000;font-size:1.2rem;overflow:hidden;}
+.logout{width:6rem;font-size:1.1rem;}
+.logout:hover{cursor: pointer;background: red;}
+
+.fullscreen .fixed-left{position:absolute;top:0;bottom:0;overflow-y:auto;}
+.fullscreen .fixed-right{position:absolute;top:0;bottom:0;overflow-y:auto;left:12rem;width:auto;right:0;}
+/*导航*/
+.navigate{width:12rem;height:100%;border: 1px solid #ccc;border-width: 0 1px 0 0;background-color:#333744;color:#ddd;}
+.navigate .navigate-list{background: #42485B;}
+.navigate .nav-item{font-size:0.9rem;}
+.navigate .nav-item.active{ background:#7FFFD4;color:#333; }
+.navigate .navigate-head{padding:0.8rem;}
+.navigate .navigate-head:hover{background: red;cursor:pointer;}
+.navigate .navigate-dropdown{background: #333744;color: #d7d7d7;padding-left:1rem;font-size:0.8rem;display:none;}
+.navigate .navigate-dropdown.open{display:block;}
+
+
+.lists-content .lists-head{padding:1rem;}
+.lists-content .lists-option{padding:0.5rem 1rem;}
+/*lists option*/
+.lists-content .option-btn{display:inline-block;padding: 0.5rem 0.8rem 0.5rem 0.5rem;background: #ddd;border:1px solid #ddd;height:2.5rem;line-height:1.5rem;margin-right:0.5rem;}
+.lists-content .option-btn:hover{cursor: pointer;background:red;color:#ffffff;}
+
+.lists-query input,.lists-query select,.lists-query button{border:1px solid #ddd;height:2.5rem;padding:0.5rem 0.8rem;width:100%;line-height:1.5rem;font-size:0.8rem;}
+.lists-query input:focus,.lists-query select:focus{border:1px solid #079dff;}
+.lists-query button:hover{cursor:pointer;border:1px solid #8c8c8c;}
+/*列表表格*/
+.table-operation {width: 98%;margin-left: 1%;margin-top: 0.5rem;margin-bottom: 0.5rem;font-size: 0.8rem;text-align: left;}
+.table-operation button {border: 1px solid #ddd;padding: 0.4rem 0.2rem;}
+.table-operation button:hover {background: #ddd;}
+.table-operation button span {padding: 0 8px;}
+
+.table-list {width:97%;margin-top:0.5rem;border-bottom: 1px solid #dddddd;border-collapse: collapse;border-radius: 1px;background-color: transparent;border-spacing: 0;margin-left:1rem;margin-right:1rem;}
+.table-list > thead {background-color: #EAEAEA;}
+.table-list > thead > tr > th {padding: 0.5rem 0.5rem;font-size: 0.8rem;border: 1px solid #dddddd;}
+.table-list > tbody > tr > td {padding: 0.25rem 0.5rem;border: 1px solid #dddddd;}
+.table-list > tbody > tr:hover {background: #ffffff}
+.table-list > tbody > tr.on {background-color: #EBF5FC;border-top: 2px solid #3598dc;border-bottom: 2px solid #3598dc;}
+.table-list button {border: 1px solid #ddd;padding: 0.4rem 0.2rem;}
+.table-list button:hover {background: #ddd;}
+.table-list button span {padding: 0 8px;padding-left: 0;}
+.table-list .table-checkbox {width: 3%;}
+.table-list .table-checkbox input, .table-list .table-checkall {width: 0.9rem;height: 0.9rem;}
+.table-list .table-btn{display:inline-block;padding: 0.2rem 0.4rem 0.2rem 0.4rem;background: #ddd;}
+.table-list .table-btn:hover{cursor: pointer;background:red;color:#ffffff;}
+.table-list .no-record{text-align:center;padding-top:0.5rem;padding-bottom:0.5rem;font-size:1rem;color:#8c8c8c;}
+
+.table-pagination {width:98%;margin-left:1%;margin-top:0.5rem;margin-bottom:0.5rem;font-size: 0.8rem}
+.table-pagination a { padding: 5px 12px;display: inline-block;border: 1px solid #ccc;margin-right: 5px;color: #333;}
+.table-pagination .current {padding: 5px 12px;margin-right: 5px;font-weight: 700;background: #DBE9F8;border: 1px solid #DBE9F8;}
+.table-pagination .dropdown-toggle{border: 1px solid #ddd;padding: 0.4rem 0.2rem;}
+.table-pagination .dropup{position: relative;display: inline-block;vertical-align: middle;}
+.table-pagination .dropup button:hover{background: #ddd;}
+.table-pagination .dropup button.active{background: #ddd;}
+.table-pagination .dropup .dropdown-list li{padding:0.5rem;}
+.table-pagination .dropup .dropdown-list li:hover{color:red;cursor: pointer;}
+.table-pagination .dropup .dropdown-list li.on{background: #ddd;}
+.table-pagination .dropdown-list{position: absolute;bottom:100%;left:0;z-index:100;display:none;float:left;min-width:100%;padding:5px 0;margin:2px 0 0;font-size:0.8rem;list-style:none;background-color:#fff;border:1px solid #ccc;border:1px solid rgba(0,0,0,0.15);border-radius: 4px;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,0.175);box-shadow: 0 6px 12px rgba(0,0,0,0.175);background-clip: padding-box;}
+.table-pagination .active .dropdown-list{display:block;}
+.table-pagination .page-size{padding-left:0.5rem;padding-right:0.5rem;}
+/*表单样式*/
+.form-content{padding:1rem;}
+.form-item{line-height: 2rem; width:80%;margin-top:1rem;margin-bottom:1rem;}
+.form-item .item-title{width:12rem;height:2.5rem;color:#606060;font-size:1rem;text-align:right;padding-right:1rem;}
+.form-item .item-content{width:60%;}
+.form-item .item-content span{padding-left:0.5rem;}
+.form-item .item-descript{font-size:0.6rem;padding-left:0.5rem;line-height:1rem;color:#888888;}
+.form-item .item-descript .note{color:red;}
+.form-item input,.form-item select,.form-item button{border:1px solid #ddd;height:2.5rem;padding:0.5rem;width:100%;line-height:1.5rem;}
+.form-item input:focus,.form-item select:focus{border:1px solid #079dff;}
+.form-item button:hover{cursor:pointer;border:1px solid #8c8c8c;}
+.form-item textarea{border:1px solid #ddd;padding:0.5rem;width:100%;line-height:1.5rem;}
+.form-item textarea:focus{border:1px solid #079dff;}
+
+.select-link{color:blue;}
+.select-link:hover{cursor:pointer;color:red;}
+
+/*chooser 插件样式*/
+.chooser .chooser-item.on{background: red;color:#ffffff;}
+
+
+
+

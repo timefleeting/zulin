@@ -1,0 +1,86 @@
+<?php 
+	$orderSn 	=  Q('ordersn');
+	Q('orderSn',$orderSn);
+	$infoRes 	=  C('order','find');
+	$info 	 	=  isset( $infoRes['data'] ) ? $infoRes['data'] : false; 
+	$title   	=  '订单:'.$orderSn.' 补仓';
+	$tabs 	 	=  array();
+	$tabsIndex 	= '';
+	echo V('common','popups_head',$orderSn,$title,$tabs,$tabsIndex);
+
+$classifyList = C('classify','chooserList');
+$warehouseList = C('warehouse','chooserList');
+$deviceStatus = C('device','deviceStatus');
+
+if( !empty( $info )):
+?>
+<div class="form-content">
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>所属仓库:</span></div>
+			<div class="tcell item-content">
+					<?php echo $info['warehouseName'];?>
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>所属类目:</span></div>
+			<div class="tcell item-content">
+					<?php echo $info['classifyName'];?>
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>设备名称:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="name" placeholder="请输入设备名称" value="" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>设备编号:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="barcode" placeholder="请输入唯一设备编号" value="" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填,唯一)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>价格:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="price" type="text"  placeholder="请输入价格" />
+			</div>
+			<div class="tcell item-descript"><span>元/天(整数最多6位,小数最多两位)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>采购时间:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" id="buyerTime" param-key="buyerTime" placeholder="请选择采购时间"  readonly>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+
+</div>
+<?php 
+	endif;
+	echo V('common','popups_footer',array('add'=>array('title'=>'补仓','url'=>'{__order/addDevice__}','where'=>array('orderSn'=>$orderSn),'statusClose'=>1),)); 
+?>
+<script>
+ (function($){
+ 	$.cssLoader("__ASSETS__/css/jedate.css");
+ 	$.jsLoader("__ASSETS__/js/jedate.js?v={TIME}",function(){
+ 			jeDate("#buyerTime",{
+            	format:"YYYY-MM-DD hh:mm",
+            	isTime:true,
+            	isShow:true,
+            	fixed:true,
+            	minDate:"2010-01-01 00:00:00",
+            	//maxDate: jeDate.nowDate({DD:0}), //设定最大日期为当前日期
+        	})
+ 	});
+ })(model);
+</script>

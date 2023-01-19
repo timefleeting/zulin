@@ -1,0 +1,67 @@
+<?php
+	$loginInfo = C('login','account');
+	$uuid 	 = isset( $loginInfo['uuid'] ) ? $loginInfo['uuid'] : '';
+	Q('uuid',$uuid);
+	$infoRes =  C('account','find');
+	$info 	 =  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$optionNav  = C('navigate','navFields','account','info',3);
+?>
+<style>
+.account-info-btn{display: inline-block;padding: 0.2rem 0.8rem;background: #ddd; margin-right:0.3rem;}
+.account-info-btn:hover{cursor: pointer;}
+.form-content .account-info-btn span{padding-left:0.1rem;}
+</style>
+<div class="form-content">
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>帐号:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['mobile'];?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>昵称:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['name'];?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>性别:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo empty($info['gender'])?'--':($info['gender']==1?'男':'女');?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>邮箱:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['email'];?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['status']==0?'无效':'有效';?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>更新时间:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo !empty($info['mtime'])?date('Y-m-d H:i',$info['mtime']) : '--';?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>最后登录时间:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo !empty($loginInfo['loginTime'])?date('Y-m-d H:i',$loginInfo['loginTime']) : '--';?></span>
+			</div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>操作:</span></div>
+			<div class="tcell item-content frow">
+		<?php if( !empty( $optionNav )): foreach( $optionNav as $key => $val ): ?>
+                    <div class="account-info-btn popups-url" param-uuid="<?php echo $uuid;?>" popups-url="{__<?php echo $val['class'].'/'.$val['method'];?>__}">
+                        <i class="iconfont"><?php echo $val['icon'];?></i><span><?php echo $val['name'];?></span>
+                    </div>
+        <?php endforeach; endif; ?>
+        	</div>
+        </div>
+</div>

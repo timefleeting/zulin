@@ -1,0 +1,31 @@
+<script>
+(function(){
+  var loginEvent = 0;
+  document.onkeydown = function(){if(event.keyCode ==13){login();}}
+	model('.form-foot').on('click','button',login);
+	model('.form-item').on('click','.verify-img',function(){
+			     var imageUrl="{__common/imageVerify__}";
+            this.src=imageUrl+'?v='+Math.random();
+	});
+  function login(){
+        if(loginEvent>0) return false;
+           loginEvent++;
+        var url = "{__login/doLogin__}";
+        var d   = model('.login-item').formData();
+        model.ajax(url,{data:d,dataType:'json',type:'post',async:false,success:function(res){
+              model.notice(res.msg,{callback:function(){  
+                    if(res.status==1){
+                        model.open("{__index/index__}");
+                    }else{
+                        document.querySelector('.verify-img').src = "{__common/imageVerify__}?v="+Math.random();
+                    }
+                    loginEvent=0;
+              },type:res.status});
+        },error:function(){
+              model.notice();
+              loginEvent=0;
+        }});
+    }
+})();
+  
+</script>

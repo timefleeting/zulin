@@ -1,0 +1,90 @@
+<?php 
+$uuid  = 0;
+$title = "仓库添加";
+echo V('common','popups_head',0,$title); 
+?>
+
+<div class="form-content">
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>仓库名称:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="name" placeholder="请输入仓库名称" value="" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>区域:</span></div>
+			<div class="tcell item-content">
+				<div class="warehouseArea"></div>
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>地址:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="address" type="text" minlength=4 maxlength=50 placeholder="请输入地址" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>负责人:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="leaderMan" type="text"  placeholder="请输入负责人" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>负责人手机号:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="leaderMobile" type="text"  placeholder="请输入负责人手机号" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>负责人电子邮箱:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="leaderEmail" type="text" minlength=3 maxlength=40 placeholder="请输入负责人电子邮箱" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>排序:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="sort"  type="text" placeholder="帐号排序" value="" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="status">
+							<option value="1" >有效</option>
+							<option value="0" >无效</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+</div>
+<?php echo V('common','popups_footer',array('add'=>array('title'=>'添加','url'=>'{__warehouse/add__}','statusClose'=>1,'form'=>array('data'=>'form-control','areaName'=>'warehouseArea .chooser-checked','areaCode'=>'warehouseArea .chooser-value')))); ?>
+
+<script>
+ (function($){
+
+ 	$.jsLoader("__ASSETS__/js/cn_city_area.js?v={TIME}",function(){
+ 		$.jsLoader("__ASSETS__/js/chooser.js?v={TIME}",function(){
+			chooser(".warehouseArea",{
+					data:cityArea,
+					layer:3,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:[{value:340000,text:'安徽省'},{value:340100,text:'合肥市'},{}]
+			});
+ 		});
+ 	});
+
+ })(model);
+</script>

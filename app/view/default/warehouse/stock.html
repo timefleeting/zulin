@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<?php echo V('common','head'); ?>
+</head>
+<body>
+	<?php echo V('common','header'); ?>
+
+	<div class="fullscreen wrap-content hasheader">
+		<div class="trow">
+			<div class="navigate noselect tcell texttop fixed-left">
+					<?php echo V('common','navigate'); ?>
+			</div>
+			
+			<div class="content tcell texttop fixed-right">
+					<?php echo V('warehouse','stock_content'); ?>
+			</div>
+		</div>
+	</div>
+	<!-- 底部页脚END -->
+	<?php echo V('common','foot');?>
+	<?php echo V('common','lists_js'); ?>
+<script>
+(function($){
+		$.cssLoader("__ASSETS__/css/jedate.css");
+ 		$.jsLoader("__ASSETS__/js/jedate.js?v={TIME}",function(){
+ 			var start = {}, end = {};
+ 			jeDate("#stockStartTime",{
+            	format:"YYYY-MM-DD",
+            	isTime:true,
+            	isShow:true,
+            	fixed:true,
+            	minDate: jeDate.nowDate({DD:0}),
+            	maxDate: function (that) {
+		            //that 指向实例对象
+		            var endDay_min = jeDate.valText('#stockEndTime') || '';
+		            return endDay_min ? start.maxDate : jeDate.nowDate(365);
+
+		        }, //设定最大日期为当前日期
+		        donefun: function(obj){
+		            end.minDate = obj.val; //开始日选好后，重置结束日的最小日期
+		            jeDate("#stockEndTime",LinkageEndDate(false));
+		            
+		        }
+        	});
+        	jeDate('#stockEndTime',LinkageEndDate);
+
+        	function LinkageEndDate(istg) {
+		        return {
+		            trigger : istg || "click",
+		            format: 'YYYY-MM-DD',
+		            minDate: function (that) {
+		                //that 指向实例对象
+		                var startDay_max = jeDate.valText('#stockStartTime') || '';
+		            	return startDay_max ? end.minDate : jeDate.nowDate(0);
+		            }, //设定最小日期为当前日期
+		            maxDate: '2099-06-16 23:59:59', //设定最大日期为当前日期
+		            donefun: function(obj){
+		            	//不能大于开始时间
+		            	var startDay_max = jeDate.valText('#stockStartTime') || '';
+		            	var val = obj.val || ''; 
+		            	if(startDay_max!='' && val!='' ){
+		            			var starttime = new Date(startDay_max).getTime();
+		            			var valtime   = new Date(val).getTime(); 
+		            			if(valtime<starttime){
+		            					val = startDay_max;
+		            			}
+		            	}
+		                start.maxDate = val; //将结束日的初始值设定为开始日的最大日期
+		                jeDate.valText('#stockEndTime',val);
+		                
+		            }
+		        };    
+		    }
+		    function digit(num) {
+            		return num < 10 ? "0" + (num | 0) :num;
+        	}
+ 	});
+
+})(model);
+</script>
+</body>
+</html>

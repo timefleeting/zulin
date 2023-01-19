@@ -1,0 +1,57 @@
+<style>
+body{background:#E9E0D6;}
+.login_content{background:url(__THEME__/assets/img/login-bg.png) top center repeat-x;}
+.login_content .header{}
+.login_content .header img{height:100%;width:100%;}
+.login_content .content{margin-top:5rem;}
+.login_content .content .content-form{background:#ffffff;padding-bottom:1rem;}
+.content-form .form-head{padding-top:1rem;padding-bottom:1rem;}
+.content-form .form-head .head-item{margin:1rem 0;color:#666666;}
+.content-form .form-item{line-height: 2rem; width:80%;margin-top:1rem;margin-bottom:1rem;}
+.content-form .form-item .item-icon{width:4rem;height:3rem;background:#FAFAFA;color:#606060;font-size:1.6rem;}
+.content-form .form-item .item-icon .textfont{font-size:0.9rem;}
+.content-form .forn-item .item-verify{line-height:1rem;}
+.content-form .form-item .verify-img{height:2.5rem;}
+.content-form .form-item input{border:1px solid #ddd;height:3rem;padding:0.5rem;}
+.content-form .form-item input:focus{border:2px solid #079dff;}
+.content-form .form-foot button{background:#079dff;-webkit-box-shadow: 0px 0px 10px #e9f7ff;box-shadow: 0px 0px 10px #e9f7ff;border-radius:25px; width:8rem;height:3rem;color:#ffffff;margin-top:1rem;}
+.content-form .form-foot button:hover{cursor:pointer;}
+</style>
+
+<div class="login_content row noselect">
+		<div class="content">
+			<div class="trow center w60 textcenter content-form">
+					<div class="form-head">
+							<!-- <div class="head-item head-icon"><img src="__ASSETS__/img/logo.png" /></div> -->
+							<div class="head-item head-title"><h2>租赁业务管理系统</h2></div>
+					</div>
+					<div class="form-item trow">
+						<div class="tcell item-icon"><i class="iconfont">&#xe66c;</i></div>
+						<div class="tcell">
+							<input class="form-control login-item" param-key="mobile" minlength=3 maxlength=13 autocomplete="off" placeholder="请输入帐号" />
+						</div>
+					</div>
+					<div class="form-item trow">
+						<div class="tcell item-icon"><i class="iconfont">&#xe6f2;</i></div>
+						<div class="tcell">
+							<input class="form-control login-item" type="password" param-key="password" minlength=3 maxlength=20 autocomplete="off" placeholder="请输入密码" />
+						</div>
+					</div>
+					<div class="form-item trow">
+						<div class="tcell item-icon"><i class="textfont">验证码</i></div>
+						<div class="tcell ">
+							<input class="form-control login-item" param-key="verify" minlength=4 maxlength=4 autocomplete="off" placeholder="请输入验证码" />
+						</div>
+						<div class="tcell item-verify textleft">
+							<img class="verify-img" src="{__common/imageVerify__}" />
+						</div>
+					</div>
+					<div class="form-foot trow">
+							<div class="tcell w100"><button type="button" >登录</button></div>
+					</div>
+			</div>
+
+		</div>
+	
+</div>
+

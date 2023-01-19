@@ -1,0 +1,85 @@
+<script>
+    (function($) {
+
+        $('.form_image').on('click','.image-delete',function(){
+            var hash 		= this.getAttribute('data-hash');
+            var image       = document.querySelector('.view-content-' + hash);
+            var image64     = document.querySelector('.control-image-' + hash);
+            var image64_val = image64.value;
+            if( image64_val ==null || image64_val=='' ){
+                 $.notice('暂无图片!');
+                return false;
+            }
+            if( !confirm('确定要删除图片?') ){
+                return false;
+            }
+            image.src     = '';
+            image64.value = '';
+            /*
+            //通过cloneNode方法，复制file input，并调用父节点的replaceNode方法替换原来的input：
+            var imageInput = document.querySelector('.Js_image_input_' + field);
+            imageInput.value= "";
+            imageInput.parentNode.replaceChild(imageInput.cloneNode(true),imageInput);
+            //如果中间那句不加的话，火狐下只会复制，不会reset。
+            */
+            var imageForm    = document.querySelector('.image-form-'+hash);
+            	imageForm.reset();
+            //var imageInput   = document.querySelector('.Js_image_input_'+hash);
+            //imageInput.value = "";
+            //imageInput.parentNode.replaceChild(imageInput.cloneNode(true),imageInput);
+        });
+
+        $('.form_image').on('change','.upload-widget',function(e){
+        		var hash = this.getAttribute('data-hash');
+        		var file = this.files[0];
+        		if (!/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(file.type)) {
+	                $.notice("上传的图片的格式不对");
+	                return false;
+            	}
+	            if (file.size >= 1024 * 1024) {
+	                $.notice('图片大小不能大于1M！');
+	                return false;
+	            }
+	            var reader = new FileReader(file);
+	            reader.readAsDataURL(file);
+	            reader.onload = function (e) {
+	                var image = new Image();
+	                image.src = this.result;
+	                image.onload = function () {
+	                    var imData = getBase64Image(image,file.type); //绘图成功
+	                    	document.querySelector('.view-content-' + hash).src = imData;
+                    		document.querySelector('.control-image-' + hash).value = imData;
+	                };
+	            };
+        });
+       	/*
+       	 * 绘图
+       	 */
+        function getBase64Image(image,type) {
+                var canvas = document.createElement("canvas");
+                var width = image.width;
+                var height = image.height;
+                /*if (width > height) {
+                    if (width > 300) {
+                        height = Math.round(height *= 300 / width);
+                        width = 300;
+                    }
+                } else {
+                    if (height > 300) {
+                        width = Math.round(width *= 300 / height);
+                        height = 300;
+                    }
+                }*/
+                canvas.width = width;
+                /*设置新的图片的宽度*/
+                canvas.height = height;
+                /*设置新的图片的长度*/
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(image, 0, 0, width, height);
+                /*绘图*/
+                return canvas.toDataURL(type,0.8);
+                //return canvas.toDataURL("image/png", 0.8);
+        }
+
+    })(model);
+</script>

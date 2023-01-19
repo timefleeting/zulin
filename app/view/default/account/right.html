@@ -1,0 +1,98 @@
+<?php 
+	$uuid  	 = Q('uuid');
+	$infoRes =  C('account','find',$uuid);
+	$info 	 =  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$title   =  $info['name'];
+	$mobile  =  $info['mobile'];
+	$supperMobile = C('account','getSupperMobile');
+	$tabs 	 = array();
+	$optionNav = C('navigate','navFields','account','index',3);
+	if( !empty( $optionNav )){
+			foreach( $optionNav as $key => $val ){
+				$tabs[$val['method']] = array('title'=>$val['name'],'url'=>"{__{$val['class']}/{$val['method']}__}");
+			}
+	}
+	$tabsIndex='right';
+	echo V('common','popups_head',$uuid,$title,$tabs,$tabsIndex); 
+	$rightTree = C('navigate','rightTree');
+	$accountRight = C('account','getRight',$uuid );
+	$right = !empty( $accountRight ) ? explode(',',$accountRight ) : array();
+?>
+<style>
+.form-right .form-item{width:90%;}
+.form-right .form-item .item-content{width:100%;}
+.form-right .notice-head{ font-size:0.8rem; }
+.form-right .notice-item{ color:#8c8c8c; font-size:0.8rem; }
+.form-right .import-notice{color:red;text-align:center;}
+.right{border-bottom: 1px dashed #ddd;padding:0.5rem;background-color:#f9f9f9;font-size:0.8rem;}
+.right .form-checkbox{width:1rem;height:1rem;vertical-align: middle;}
+.right .box{padding-bottom:3px;}
+.right .name{padding-left:0.2rem;}
+.right .nav{width:30%;}
+.right .content{width:70%;}
+.right .nav1{width:40%;}
+.right .content1{width:60%;}
+.right .right1{background-color:#fff;margin-top:0.5rem;margin-bottom:0.5rem;padding:0.3rem;}
+</style>
+<div class="form-right form-content">
+		<div class="form-item trow">
+			<div class="tcell item-content">
+				<div class="notice-head">帐号访问功能权限以及相关的业务接口权限配置</div>	
+			</div>
+		</div>
+		<div class="form-item trow noselect">
+			<div class="tcell item-content">
+				<?php if($supperMobile==$mobile): ?>
+						<div class="import-notice">系统超级管理员不需要配置权限</div>
+				<?php else: ?>
+						<?php if( !empty( $rightTree[0] ) ): foreach( $rightTree[0] as $key => $val ): ?>
+						<div class="frow right">
+								<div class="nav frow frow-center">
+									<div class="box">
+									<input type="checkbox" data-type="checkbox" class="form-checkbox checkbox-parent-0" param-key="<?php echo $val['id'];?>" value="<?php echo $val['id'];?>" data-uuid="<?php echo md5($val['id']);?>" <?php echo in_array( $val['id'],$right ) ? 'checked':'';?> /></div>
+									<div class="name"><?php echo $val['name'];?></div>
+								</div>
+								<div class="content">
+									<?php if(!empty( $rightTree[$val['id']])):foreach( $rightTree[$val['id']] as $key1=>$val1 ):?>
+											<div class="frow right1">
+												<div class="nav1 frow">
+													<div class="box">
+														<input type="checkbox" data-type="checkbox" value="<?php echo $val1['id'];?>" 
+														class="form-checkbox checkbox-parent-<?php echo md5($val['id']);?>" 
+														param-key="<?php echo $val1['id'];?>" data-uuid="<?php echo md5($val1['id']);?>" 
+														<?php echo in_array( $val1['id'],$right ) ? 'checked':'';?> />
+													</div>
+													<div class="name"><?php echo $val1['name']; ?></div>
+												</div>
+												<div class="content1">
+													<?php if( !empty( $rightTree[$val1['id']] ) ):foreach( $rightTree[$val1['id']] as $key2=>$val2 ):?>
+															<div class="nav2 frow">
+																<div class="box"><input type="checkbox" data-type="checkbox" class="form-checkbox checkbox-parent-<?php echo md5($val['id']);?> checkbox-parent-<?php echo md5($val1['id']);?>" data-uuid="<?php echo md5($val2['id']);?>" param-key="<?php echo $val2['id'];?>" value="<?php echo $val2['id'];?>" <?php echo in_array( $val2['id'],$right ) ? 'checked':'';?> /></div>
+																<div class="name"><?php echo $val2['name']; ?></div>
+															</div>
+													<?php endforeach; endif; ?>
+												</div>
+											</div>
+									<?php endforeach; endif; ?>
+								</div>
+						</div>
+						<?php endforeach; endif; ?>
+				<?php endif; ?>
+			</div>
+		</div>
+</div>
+<?php
+	echo V('common','popups_footer',array('save'=>array('title'=>'保存权限','url'=>'{__account/saveRight__}','statusClose'=>1,'where'=>array('uuid'=>$uuid),'form'=>array('right'=>'form-checkbox'),),)); 
+?>
+<script>
+(function($){
+		$('.item-content').on('click','.form-checkbox',function(){
+				var uuid = this.getAttribute('data-uuid');
+				var cls  = ".checkbox-parent-"+uuid,status = this.checked;
+				$(cls).each(function(idx,item){
+						item.checked=status;
+				});
+		});
+})(model);
+
+</script>

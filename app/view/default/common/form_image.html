@@ -1,0 +1,27 @@
+<?php
+$iamgeKey   = isset( $var1['imageKey'] ) ? $var1['imageKey'] : 'image';
+$imageBase64  = isset( $var1['imageBase64'] )? $var1['imageBase64']: '';
+$imageHash  = time().rand(1000000,9999999);
+?>
+<style>
+
+.image-upload{position:relative;display:inline-block;}
+.image-upload .upload-view{font-size:1rem;}
+.image-upload .upload-widget{position:absolute;left:0;top:0;z-index:10;height:100%;opacity:0;}
+.view-content,.upload-view{display:inline-block;}
+.image-delete{margin-left:1rem;display:inline-block;}
+.image-upload:hover,.image-upload .upload-widget:hover,.image-delete:hover{cursor: pointer;}
+</style>
+<div class="form_image">
+		<form class="image-form-<?php echo $imageHash;?>">
+		<div class="image-upload">
+			<div class="view-content"><image class="view-content-<?php echo $imageHash;?>" src="<?php echo $imageBase64;?>" /></div>
+			<div class="upload-view">+上传图片</div>
+			<input type="file" class="upload-widget Js_image_input_<?php echo $imageHash;?>" data-hash="<?php echo $imageHash;?>" />
+		</div>
+		<div class="image-delete" data-hash="<?php echo $imageHash;?>">
+			<a>删除</a>
+		</div>
+		</form>
+		<input type="hidden" class="form-control control-image-<?php echo $imageHash;?>" data-type="input" param-key="<?php echo $iamgeKey;?>" value="<?php echo $imageBase64;?>" />
+</div>

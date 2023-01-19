@@ -1,0 +1,81 @@
+<?php
+	$uuid    	= Q('uuid');
+	$title   	= Q('title');
+	$operate 	= Q('operate');
+	$operate 	= !empty($operate ) && is_array($operate ) ? $operate : false;
+	$tabs    	= Q('tabs');
+	$tabs    	= !empty($tabs) && is_array($tabs) ? $tabs : false;
+	$delegate 	= Q('delegate');
+	$class		= isset($delegate['c']) ? $delegate['c'] : false;
+	$method		= isset($delegate['m']) ? $delegate['m'] : false;
+	$jscode     = Q('jscode');
+	$jscodeC 	= isset($jscode['c']) ? $jscode['c'] : false;
+	$jscodeM 	= isset($jscode['m']) ? $jscode['m'] : false;
+	$uuid   	= !empty($uuid) ? $uuid : 0;
+?>
+<style>
+.popups-content{font-size:1rem;}
+.popups-content .fullscreen{background: #F2F2F2;}
+.popups-content .fullscreen .fullcontent{background: #ffffff;}
+.popups-content .header .trow,.popups-content .fullscreen .fullcontent,.popups-content .footer .trow{width:80%;}
+.popups-content .header .modal-title{padding:0.5rem 0.5rem 0.5rem 0rem;}
+.popups-content .header .close-reload{background:#E9E0D6;color:#888888;border-radius:7px;padding-left:2rem;padding-right:2rem;padding:0.5rem;font-size:0.9rem;}
+.popups-content .header .close-reload:hover{cursor: pointer;background:#7FFFD4;color:#ffffff;}
+.popups-content .footer{background: #333744;color:#fff;}
+.popups-content .footer .footer-btn{display: inline-block;background:red;padding:0.5rem 2rem;color:#ffffff;}
+.popups-content .footer .footer-btn:hover{cursor: pointer;background:#079DFF;}
+
+.tabs{background:#F2F2F2;line-height:2rem;padding-top:0.5rem;}
+.tabs .tabs-item{display:inline-block;padding:0.5rem 2rem 0.5rem 2rem;}
+.tabs .tabs-item.active{background:#ffffff;color:#0084ff;}
+.tabs .tabs-item.await:hover{cursor: pointer;background:red;color:#ffffff;}
+</style>
+
+<div class="popups-content popups-content-<?php echo $uuid;?>">
+<!-- head title -->
+	<div class="header noselect">
+		<div class="trow">
+			 <div class="tcell w70"><span class="modal-title"><?php echo $title; ?></span></div>
+			 <div class="tcell w30 textright"><div class="row textright"><div class="cell pull-right"><div class="close-reload">关闭</div></div></div></div>
+		</div>
+	</div>
+<!-- head title end -->
+
+<!-- tabs -->
+	<?php if(!empty( $tabs ) ): ?>
+		<div class="trow noselect">
+			<div class="tabs tcell w100 textcenter">
+			<?php foreach( $tabs as $key => $val ): ?>
+					<div class="tabs-item tabs-item-<?php echo $key;?><?php echo $key==$method?' active':' await';?>" data-type="<?php echo $key;?>" ><?php echo $val;?></div>
+			<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+<!-- tabs end -->
+
+<!-- content -->
+	<div class="fullscreen hasheader<?php echo !empty($operate) ? ' hasfooter':'';?><?php echo !empty($tabs)?' hastabs':'';?>">
+			<div class="fullcontent center">
+						<?php echo !empty($class) && !empty($method) ? V($class,$method,Q(true)) : '';?>
+			</div>
+	</div>
+<!-- content end -->
+
+<!-- footer -->
+	<?php if( !empty( $operate )): ?>
+	<div class="footer noselect">
+		<div class="trow">
+			<div class="tcell w100 textcenter operate">
+						<?php foreach( $operate as $key => $val ): ?>
+								<div class="footer-btn footer-btn-<?php echo $key;?>" data-type="<?php echo $key;?>" ><?php echo $val;?></div>
+						<?php endforeach; ?>		
+			</div>
+		</div>
+	</div>
+	<?php endif; ?>
+<!-- footer end -->
+
+</div>
+
+<?php echo !empty($jscodeC) && !empty($jscodeM) ? V($jscodeC,$jscodeM,Q(true)) : '';?>
+

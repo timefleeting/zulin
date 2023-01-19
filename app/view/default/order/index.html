@@ -1,0 +1,141 @@
+<?php
+    $action = basename(dirname(__FILE__));
+    if(empty( $action ) ) die;
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<?php echo V('common','head'); ?>
+</head>
+<body>
+	<?php echo V('common','header'); ?>
+
+	<div class="fullscreen wrap-content hasheader">
+		<div class="trow">
+			<div class="navigate noselect tcell texttop fixed-left">
+					<?php echo V('common','navigate'); ?>
+			</div>
+			
+			<div class="content tcell texttop fixed-right">
+					<?php echo V($action,'index_content'); ?>
+			</div>
+		</div>
+	</div>
+	<!-- 底部页脚END -->
+	<?php echo V('common','foot');?>
+	<?php echo V('common','lists_js'); ?>
+
+<script>
+(function($){
+	$.cssLoader("__ASSETS__/css/jedate.css");
+ 	$.jsLoader("__ASSETS__/js/jedate.js?v={TIME}",function(){
+ 			var start = {}, end = {};
+ 			jeDate("#querystime",{
+            	format:"YYYY-MM-DD",
+            	isTime:true,
+            	isShow:true,
+            	fixed:true,
+            	minDate: jeDate.nowDate({MM:-3}),
+            	maxDate: function (that) {
+		            //that 指向实例对象
+		            var endDay_min = jeDate.valText('#queryetime') || '';
+		            return endDay_min ? start.maxDate : jeDate.nowDate(365);
+
+		        }, //设定最大日期为当前日期
+		        donefun: function(obj){
+		        	/*
+		            end.minDate = obj.val; //开始日选好后，重置结束日的最小日期
+		            jeDate("#queryetime",LinkageEndDate(false));
+		            */
+		        	var minTime    =  jeDate.timeStampDate(this.minDate);//最小时间	
+		        	var doneTime   = jeDate.timeStampDate( obj.val );  //选择的时间
+		        	if( doneTime < minTime ){
+		        			obj.val = 	jeDate.timeStampDate(minTime,'YYYY-MM-DD');	
+		        			jeDate.valText('#querystime',obj.val);
+		        	}
+		            end.minDate = obj.val; //开始日选好后，重置结束日的最小日期
+		            jeDate("#queryetime",LinkageEndDate(false));
+		        }
+        	});
+        	jeDate('#queryetime',LinkageEndDate);
+
+        	function LinkageEndDate(istg) { 
+        		var config = {
+            			trigger : istg || "click",
+			            format: 'YYYY-MM-DD',
+			            minDate: function (that) {
+			                //that 指向实例对象
+			                var startDay_max = jeDate.valText('#querystime') || '';
+                			var endMinDate = end.minDate || '';
+            				var minDate = startDay_max ? endMinDate : jeDate.nowDate({MM:-3});
+			            	/*
+			            	if( startDay_max!='' && startDay_max!=null && minDate !='' && minDate != null ){
+			                		jeDate.valText('#rationEndTime',jeDate.timeStampDate(jeDate.timeStampDate(minDate),'YYYY-MM-DD'));
+			                }
+			                */
+			            	return minDate;
+			            }, //设定最小日期为当前日期
+			            maxDate: '2099-06-16 23:59:59', //设定最大日期为当前日期
+			            donefun: function(obj){
+			            	//不能大于开始时间
+			            	var startDay_max = jeDate.valText('#querystime') || '';
+			            	var val = obj.val || ''; 
+			            	if(startDay_max!='' && val!='' ){
+			            			var starttime = new Date(startDay_max).getTime();
+			            			var valtime   = new Date(val).getTime(); 
+			            			if(valtime<starttime){
+			            					val = startDay_max;
+			            			}
+			            	}
+			                start.maxDate = val; //将结束日的初始值设定为开始日的最大日期
+			                jeDate.valText('#queryetime',val);
+			            }	
+            	};
+
+            	var endinitDate = end.minDate || '';
+            	var startMaxDate = start.maxDate || '';
+            	if( endinitDate!=''&&endinitDate!=null && (startMaxDate==''||startMaxDate==null)  ){
+            			//config['isinitVal'] = true;
+            			//config['initDate']  = [{MM:"+3"},true];
+            			var endDate = new Date( jeDate.timeStampDate( endinitDate )*1000 );
+            			var nowDate = new Date();
+            			var endYear =endDate.getFullYear(),endMonth = endDate.getMonth()+1,endDays = endDate.getDate();
+            			var nowYear = nowDate.getFullYear(),nowMonth = nowDate.getMonth()+1,nowDays= nowDate.getDate();
+   						var diffYear= endYear-nowYear,diffMonth = endMonth-nowMonth,diffDays = endDays - nowDays;
+   						diffYear  = diffYear >0  ? "+"+diffYear  : (diffYear<0?diffYear:0);
+   						diffMonth = diffMonth>0  ? "+"+diffMonth : (diffMonth<0?diffMonth:0);
+   						diffDays  = diffDays >0  ? "+"+diffDays  : (diffDays<0?diffDays:0);
+            			var formatDate = {MM:diffMonth,DD:diffDays};
+            			config['isinitVal'] = true;
+            			config['initDate']  = [formatDate,true];
+            			start.maxDate = endinitDate;
+            	}
+		        return config;  
+		        
+		    }
+		    function digit(num) {
+            		return num < 10 ? "0" + (num | 0) :num;
+        	}
+ 	});
+
+ 	$('.lists-option').on('click','.searchStatus',function(){
+ 			$('.lists-option .searchStatus').each(function(){
+ 					this.classList.remove('on');
+ 			});
+ 			this.classList.add('on');
+ 			var formData  = $(".query-control").formData() || {};	
+ 			var tableNode = $('.content-order .data-table')[0]|| {};
+ 			var tableData = tableNode.querySelector('.table-list') || {}; 
+ 			if( !$.isEmptyObject(formData) ){
+				 	for(var i in formData ){
+				 		tableData.setAttribute('query-'+i,formData[i]);
+				 	}
+			}
+			reLoadList(tableNode);
+ 	});
+
+})(model);
+
+</script>
+</body>
+</html>

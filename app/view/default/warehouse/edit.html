@@ -1,0 +1,130 @@
+<?php 
+	$uuid 	 =  Q('uuid');
+	$infoRes =  C('warehouse','find',$uuid);
+	$info 	 =  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$title   =  $info['name'];
+	$tabs	 = array();
+	$optionNav = C('navigate','navFields','warehouse','index',3);
+	if( !empty( $optionNav )){
+			foreach( $optionNav as $key => $val ){
+				$tabs[$val['method']] = array('title'=>$val['name'],'url'=>"{__{$val['class']}/{$val['method']}__}");
+			}
+	}
+	$tabsIndex='edit';
+	echo V('common','popups_head',$uuid,$title,$tabs,$tabsIndex); 
+if( !empty( $info )):
+?>
+
+<div class="form-content">
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>仓库编号:</span></div>
+			<div class="tcell item-content">
+				<?php echo $info['uuid'];?>
+			</div>
+			<div class="tcell item-descript"></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>仓库名称:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="name" placeholder="请输入仓库名称" value="<?php echo $info['name'];?>" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>区域:</span></div>
+			<div class="tcell item-content">
+				<div class="warehouseArea"></div>
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>地址:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="address" type="text" minlength=4 maxlength=50 placeholder="请输入地址" value="<?php echo $info['address'];?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>负责人:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="leaderMan" type="text"  placeholder="请输入负责人" value="<?php echo $info['leaderMan'];?>" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>负责人手机号:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="leaderMobile" type="text"  placeholder="请输入负责人手机号" value="<?php echo $info['leaderMobile'];?>" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>负责人电子邮箱:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="leaderEmail" type="text" minlength=3 maxlength=40 placeholder="请输入负责人电子邮箱" value="<?php echo $info['leaderEmail'];?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>排序:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="sort"  type="text" placeholder="帐号排序" value="<?php echo $info['sort'];?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="status">
+							<option value="1" <?php echo $info['status']==1?'selected':'';?> >有效</option>
+							<option value="0" <?php echo $info['status']==0?'selected':'';?> >无效</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>创建时间:</span></div>
+			<div class="tcell item-content">
+				<?php echo date('Y-m-d H:i',$info['ctime'] ); ?>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>更新时间:</span></div>
+			<div class="tcell item-content">
+				<?php echo date('Y-m-d H:i',$info['mtime'] ); ?>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+</div>
+<?php endif; ?>
+<?php echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__warehouse/save__}','statusClose'=>1,'where'=>array('uuid'=>$uuid),'form'=>array('data'=>'form-control','areaName'=>'warehouseArea .chooser-checked','areaCode'=>'warehouseArea .chooser-value')))); ?>
+
+<script>
+ (function($){
+
+ 	$.jsLoader("__ASSETS__/js/cn_city_area.js?v={TIME}",function(){
+ 		$.jsLoader("__ASSETS__/js/chooser.js?v={TIME}",function(){
+			chooser(".warehouseArea",{
+					data:cityArea,
+					layer:3,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:[{value:"<?php echo $info['province'];?>",text:"<?php echo $info['provinceName'];?>"},
+							 {value:"<?php echo $info['city'];?>",text:"<?php echo $info['cityName'];?>"},
+							 {value:"<?php echo $info['area'];?>",text:"<?php echo $info['areaName'];?>"}]
+			});
+ 		});
+ 	});
+
+ })(model);
+</script>
+

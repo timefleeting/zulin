@@ -1,0 +1,100 @@
+<?php 
+	$uuid 	 =  Q('uuid');
+	$infoRes =  C('account','find',$uuid);
+	$info 	 =  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$email   = !empty( $info['email'] ) ? $info['email'] : '';
+	$title   =  $info['name'];
+	$tabs	 = array();
+	$optionNav = C('navigate','navFields','account','index',3);
+	if( !empty( $optionNav )){
+			foreach( $optionNav as $key => $val ){
+				$tabs[$val['method']] = array('title'=>$val['name'],'url'=>"{__{$val['class']}/{$val['method']}__}");
+			}
+	}
+	$tabsIndex='edit';
+	echo V('common','popups_head',$uuid,$title,$tabs,$tabsIndex); 
+if( !empty( $info )):
+?>
+
+<div class="form-content">
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>Id:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['id'];?></span>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>编号:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['uuid'];?></span>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>帐号:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo $info['mobile'];?></span>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>昵称:</span></div>
+			<div class="tcell item-content">
+			<input class="form-control" param-key="name" placeholder="请输入昵称" value="<?php echo $info['name'];?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>性别:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="gender">
+							<option value="0" <?php echo $info['gender']==0?'selected':'';?> >保密</option>
+							<option value="1" <?php echo $info['gender']==1?'selected':'';?> >男</option>
+							<option value="2" <?php echo $info['gender']==2?'selected':'';?> >女</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>邮箱:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="email" type="text" minlength=3 maxlength=30 placeholder="请输入邮箱" value="<?php echo $email;?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>排序:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="sort"  type="text" placeholder="帐号排序" value="<?php echo $info['sort'];?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="status">
+							<option value="0" <?php echo $info['status']==0?'selected':'';?> >无效</option>
+							<option value="1" <?php echo $info['status']==1?'selected':'';?> >有效</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>创建时间:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo !empty($info['ctime'])?date('Y-m-d H:i',$info['ctime']) : '--';?></span>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>更新时间:</span></div>
+			<div class="tcell item-content">
+				<span><?php echo !empty($info['mtime'])?date('Y-m-d H:i',$info['mtime']) : '--';?></span>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+</div>
+<?php endif; echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__account/save__}','where'=>array('uuid'=>$uuid),'statusClose'=>1),)); ?>
+

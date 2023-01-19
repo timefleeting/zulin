@@ -1,0 +1,51 @@
+<?php
+	
+	function navItem($begin='0',$level=0){
+
+		if($level>100){die;}
+		static $uriKey,$uriValue,$lists;
+		if(empty( $uriKey ) || empty( $uriValue)){
+			$uri   = M('Service','parseURI');
+			$uriKey = isset( $uri['uriKey'] ) ? $uri['uriKey']:false;
+			$uriValue = isset( $uri['uriValue'] ) ? $uri['uriValue'] : false;
+		}
+		if(empty( $lists )){
+				$lists = C('navigate','navTree');
+		}
+		if(!isset( $lists[$begin] ) || empty( $lists[$begin] ))
+			return false;
+		$xsl = ''; 
+		$level+=1;
+		foreach( $lists[$begin] as $key => $val ){
+			  $uri    = $val['uri'];
+			  $class  = $val['class'];
+			  $method = $val['method'];
+			  $name   = $val['name'];
+			  $icon   = $val['icon'];
+			  $parent = $val['parent'];
+			  $sort   = $val['sort']; 
+			  $cls    = ".navigate-list-".$parent;
+			  $cls_icon = ".navigate-icon-".$parent;
+			  $active = '';
+			  $active = ($uriKey==$class&&$uriValue==$method) ? ' active' : ''; 
+			  $xsl  .= '<div class="nav-item'.$active.'">';
+			  $xsl  .= '<div class="frow frow-between navigate-head data-url" data-url="'.$uri.'">';
+			  $xsl  .= '<div class="frow">';
+			  $xsl  .= '<div class="iconfont">'.$icon.'</div>';
+			  $xsl  .= '<div class="nav-title">'.$name.'</div>';
+			  $xsl  .= '</div>';
+			  if(isset( $lists[$sort])){
+			  		$xsl  .= '<div class="arrow iconfont navigate-icon-'.$sort.'">&#xe64c;</div>';	
+			  }
+			  $xsl  .= '</div>';
+			  $xsl  .= '<div class="navigate-dropdown navigate-list-'.$sort.'" data-sort="'.$sort.'" >';
+			  $xsl  .= isset( $lists[$sort]) ? navItem($sort,$level) : '';
+			  $xsl  .= '</div>';
+			  $xsl  .= '</div>';
+		}
+		return $xsl;
+	}
+?>
+<div class="navigate-list navigate-list-0">
+	<?php echo navItem(); ?>
+</div>

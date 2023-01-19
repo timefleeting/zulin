@@ -1,0 +1,56 @@
+<?php
+	$starttime = strtotime(date('Y-m-d',time()));
+	$endtime   = $starttime + (3600*24) -1;
+	$classifyList  = C('classify','chooserList');
+	$defaultClassify = isset( $classifyList[0]['uuid'] ) ? $classifyList[0]['uuid'] : '';
+?>
+<style>
+.query-time-title{font-weight:bold;margin-left:0.5rem;font-size:0.8rem;}
+.lists-head .head-notice{color:#8c8c8c;font-size:0.8rem;margin-top:0.5rem;}
+</style>
+<div class="lists-content">
+		<div class="lists-head">
+				<h3>设备仓库库存概况</h3>
+				<div class="head-notice">默认:库存开始时间与结束时间为当天</div>
+		</div>
+		<div class="lists-option frow">
+				<?php 
+					$optionNav = C('navigate','navFields','warehouse','stock',2);
+					if( !empty( $optionNav )):foreach( $optionNav as $key => $val ): ?>
+						<div class="option-btn popups-url" popups-url="{__<?php echo $val['class'].'/'.$val['method'];?>__}">
+	                		<i class="iconfont"><?php echo $val['icon'];?></i><span><?php echo $val['name'];?></span>
+            			</div>	
+				<?php endforeach; endif; ?>
+				<div class="frow lists-query">
+				<div>
+					<select class="query-control" param-key="classify">
+						<?php if( !empty( $classifyList ) ): foreach( $classifyList as $key => $val ): ?>
+							<option value="<?php echo $val['uuid'];?>" ><?php echo $val['name'];?></option>
+						<?php endforeach; ?>
+					    <?php else: ?>
+					    	<option value="0">暂无类目,请先添加类目</option>
+						<?php endif; ?>
+					</select>
+				</div>
+				
+				<div class="frow">
+						<div class="query-time-title">开始时间:</div>
+						<div class="start-time">
+						<input class="query-control stockStartTime" id="stockStartTime" param-key="startTime" placeholder="请选择开始时间"  readonly />
+						</div>
+				</div>
+				<div class="frow">
+						<div class="query-time-title">结束时间:</div>
+						<div class="end-time">
+						<input class="query-control stockEndTime" id="stockEndTime" param-key="endTime" placeholder="请选择结束时间"  readonly />
+						</div>
+				</div>
+
+				
+				<div class="search-btn">
+					 <button class="query-btn" data-formKey="query-control">确定</button>
+				</div>
+				</div>
+		</div>
+		<div class="lists-table data-table" data-url="{__warehouse/stock_table__}" init-classify="<?php echo $defaultClassify;?>" init-starttime="<?php echo $starttime;?>" init-endtime="<?php echo $endtime;?>" ></div>
+</div>

@@ -1,0 +1,131 @@
+<?php 
+	$orderSn 	=  Q('ordersn');
+	Q('orderSn',$orderSn);
+	$infoRes 	=  C('order','find');
+	$info 	 	=  isset( $infoRes['data'] ) ? $infoRes['data'] : false; 
+	$title   	=  '订单:'.$orderSn.' 设备调换';
+	$tabs 	 	=  array();
+	$tabsIndex 	= '';
+	echo V('common','popups_head',$orderSn,$title,$tabs,$tabsIndex); 
+if( !empty( $info )): 
+	$opLists = C('orderProduct','lists');
+    $mwFind  = C('warehouse','findInfo',$info['warehouse']); 
+	$bwLists = C('warehouseBelong','listsByUuid',$info['warehouse']);
+	$startTime = $info['rationStartTime'] - $info['pretime'];  //[00:00]
+	$endTime   = $info['rationEndTime']	  + $info['backtime']; //[23:59]
+
+?>
+<style>
+.form-content .order-product,.form-content .exchange-product{width:49%;}
+.form-content .order-item{width:100%;margin-top:0.2rem;border-bottom:1px solid #dddddd;border-spacing:0;border-radius:1px;text-align:center;}
+.form-content .order-item th{padding: 0.2rem 0.5rem;font-size:0.8rem;border:1px solid #dddddd;background-color:#F8F8F8;}
+.form-content .order-item td{padding: 0.2rem 0.5rem;border: 1px solid #dddddd;font-size:0.7rem;}
+.form-content .table-title{line-height:1.5rem;height: 1.9rem;padding: 0.2rem;}
+.form-content .exWarehouse input{border: 1px solid #ddd;height: 1.9rem;padding: 0.2rem;width: 100%;line-height: 1.5rem;}
+</style>
+<div style="margin-top:1rem;margin-left:1rem;color:red;">注意:订单设备状态为已分配、未提货、维修异常才能调换.该仓下所关联的有效仓库设备都可调换</div>
+<div class="form-content frow frow-between frow-top">
+	<div class="order-product">
+		<div class="table-title">
+			<span class="title">订单设备</span>
+			<span class="desc"></span>
+		</div>
+		<div>
+			<table class="order-item">
+						<thead>
+						<tr>
+							<th><input type="checkbox" class="table-checkall textmiddle" value='0'/></th>
+							<th width="20%">所在仓库</th>
+							<th width="20%">所属仓库</th>
+							<th width="25%">设备</th>
+							<th width="15%">价格</th>
+							<th width="15%">状态</th>
+						</tr>
+						</thead>
+						<tbody class="item-content">
+							<?php 
+			   					foreach( $opLists as $key => $item ): 
+			        		?>
+		        			<tr>
+	        					<td><input class="order-product-item" data-type="checkbox" type="checkbox" param-key='<?php echo isset( $item["device"] ) ? $item["device"] : 0; ?>' value='<?php echo isset( $item["device"] ) ? $item["device"] : 0; ?>'/></td>
+	        					<td><?php echo $item['targetWhName'];?></td>
+	        					<td><?php echo $item['warehouseName'];?></td>
+	        					<td><?php echo $item['name'];?></td>
+	        					<td><?php echo $item['price']/100;?></td>
+	        					<td><?php echo C('device','deviceStatus',$item['deviceStatus']);?></td>
+		        			</tr>
+		        		    <?php endforeach; ?>
+						</tbody>
+				</table>
+		</div>
+	</div>
+	<div class="exchange-product">
+		<div class="frow frow-between table-title">
+			<div>调换设备</div>
+			<div class="exWarehouse">
+			</div>
+		</div>
+		<div>
+			 <div class="lists-table data-table table-select" data-url="{__order/warehouseProduct__}" init-warehouse="<?php echo $info['warehouse'];?>" init-classify="<?php echo $info['classify'];?>" init-starttime="<?php echo $startTime;?>" init-endtime="<?php echo $endTime;?>"></div>
+		</div>
+	</div>
+
+</div>
+<?php 
+	endif;
+	echo V('common','popups_footer',array('save'=>array('title'=>'确定','url'=>'{__order/saveOrderProduct__}','where'=>array('orderSn'=>$orderSn),'form'=>array('orderProduct'=>'order-product-item','exchange'=>'device-checkbox'),'statusClose'=>1,),)); 
+?>
+<?php echo V('common','form_image_js'); ?>
+
+<script>
+(function($){
+		
+		/*加载调换设备,默认为主库*/
+		$.ready(function(){
+			var tableNode = $('.exchange-product .data-table')[0] || {};
+        	reLoadList(tableNode);
+    	});
+
+		$('.order-product').on('click','.order-item .table-checkall',function(){
+					var self = this;
+					$('.order-product .order-product-item').each(function(){
+							this.checked=self.checked;
+					});
+		});
+
+		$.jsLoader("__ASSETS__/js/chooser.js?v={TIME}",function(){
+ 			var warehouseData=[];
+ 			<?php if( !empty($mwFind)): ?>
+ 					warehouseData[0] = {'text':'<?php echo $mwFind['name'];?>','value':'<?php echo $mwFind['uuid'];?>'};
+ 			<?php endif; ?>
+ 			<?php if( !empty( $bwLists )): $cnt=1; foreach( $bwLists as $key => $val ): ?>
+ 					warehouseData[<?php echo $cnt;?>] = {'text':"<?php echo $val['warehouseName'];?>",'value':"<?php echo $val['buuid'];?>"};
+ 			<?php $cnt++; endforeach; endif; ?>
+ 			
+ 			var defaultWarehouse = warehouseData[0]||{}, defaultChecked = []; 
+ 				defaultChecked.push( defaultWarehouse );
+
+ 			chooser(".exWarehouse",{
+					data:warehouseData,
+					layer:1,
+					confirmBtn:false,
+					multiCheck:false,
+					checked:defaultChecked,
+					updateCallback:update,
+			});
+
+			function update(node,checked){
+					var warehouse = checked[0]['value'] || 0;
+					var exchangeNode = $('.exchange-product .data-table')[0] || {};
+						try{
+							var tableNode    = $('.exchange-product .warehouseProduct')[0] || {}	
+							tableNode.setAttribute('query-warehouse',warehouse);
+
+						}catch(e){}
+					reLoadList(exchangeNode);
+			}
+			
+ 		});
+})(model);
+</script>
+

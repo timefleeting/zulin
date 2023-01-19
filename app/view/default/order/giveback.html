@@ -1,0 +1,143 @@
+<?php 
+	$orderSn 	=  Q('ordersn');
+	Q('orderSn',$orderSn);
+	$infoRes 	=  C('order','find');
+	$info 	 	=  isset( $infoRes['data'] ) ? $infoRes['data'] : false; 
+	$title   	=  '订单:'.$orderSn.' 归还设备';
+	$tabs 	 	=  array();
+	$tabsIndex 	= '';
+	echo V('common','popups_head',$orderSn,$title,$tabs,$tabsIndex); 
+	$statusList = C('order','givebackStatus');
+if( !empty( $info )):
+	$trackingList = C('orderLog','logLists',$orderSn,'givebackOrder');
+	$trackingData = isset( $trackingList[0] ) ? $trackingList[0] : false;
+?>
+<style>
+.giveback .form-item{width:98%;}
+
+ .tracking .tracking-item{text-align:center; background:#EBF5FC;margin-bottom:1rem;padding:0.5rem;}
+ .tracking .ctime{font-weight:bold;}
+ .tracking .title{margin-left:1rem;font-weight:bold;margin-right:1rem;}
+ .tracking .logkey,.tracking .logvalue,.tracking .descTip,.tracking .descript{font-size:0.8rem;color:#8c8c8c;}
+</style>
+<div class="form-content">
+		<div class="form-item trow">
+			<div class="tcell textcenter" style="color:#8c8c8c;font-size:1.1rem;border-bottom:1px dashed #ddd;padding-bottom:0.5rem;"><span>请检查好设备并确认归还</span></div>
+		</div>
+
+		<div class="trow">
+		    <!-- 订单信息 -->
+			<div class="tcell w40" style="vertical-align: top;">
+				<?php echo V('order','info',$info ); ?>
+			</div>
+			<!-- end -->
+			<div class="tcell w60" style="vertical-align: top;">
+				<div class="giveback">
+
+						<div class="form-item trow">
+							<div class="tcell item-title"><span>归还时间:</span></div>
+							<div class="tcell item-content">
+								<input class="form-control" id="givebackTime" param-key="time" placeholder="请选择归还时间" value="<?php echo date('Y-m-d H:i',time());?>"  readonly>
+							</div>
+							<div class="tcell item-descript"><span class="note"></span></div>
+						</div>
+
+						<?php if( $info['way'] == 1 ): ?>
+						<div class="form-item trow">
+							<div class="tcell item-title"><span>归还运单号:</span></div>
+							<div class="tcell item-content">
+								<input class="form-control" param-key="tracking" placeholder="请输入运单号" value="<?php echo $trackingData['logValue'];?>" />
+							</div>
+							<div class="tcell item-descript"><span class="note"></span></div>
+						</div>
+						<div class="form-item trow">
+							<div class="tcell item-title"><span>状态:</span></div>
+							<div class="tcell item-content">
+								<select class="form-control" param-key="xstatus">
+										<option value="0">归还中</option>
+										<option value="1">确认归还</option>
+								</select>
+							</div>
+							<div class="tcell item-descript"><span class="note"></span></div>
+						</div>
+						<?php endif; ?>
+
+						<div class="form-item trow">
+							<div class="tcell item-title"><span>归还备注:</span></div>
+							<div class="tcell item-content">
+								<textarea class="form-control" param-key="desc" placeholder="请输入归还备注信息" ></textarea>
+							</div>
+							<div class="tcell item-descript"><span class="note"></span></div>
+						</div>
+						<div class="form-item trow">
+							<div class="tcell item-title"><span>设备状态:</span></div>
+							<div class="tcell item-content">
+								<select class="form-control" param-key="status">
+									<?php if( !empty( $statusList )): foreach( $statusList as $key => $val ): ?>
+										<option value="<?php echo $key;?>"><?php echo $val;?></option>
+									<?php endforeach; endif; ?>
+								</select>
+							</div>
+							<div class="tcell item-descript"><span class="note"></span></div>
+						</div>
+
+						<?php if( !empty( $trackingList )): ?>
+							<!-- 追踪记录 -->
+						<div class="form-item trow">
+							<div class="tcell item-title"><span>发货信息:</span></div>
+							<div class="tcell item-content tracking">
+								<?php foreach( $trackingList as $key => $val ): ?>
+										<div class="tracking-item">
+												<div class="frow">
+												<div class="ctime"><?php echo date('Y-m-d H:i',$val['ctime'] ); ?></div>
+												<div class="title"><?php echo $val['title']; ?></div>
+												<!-- <div class="accountname"><?php echo $val['accountName']; ?></div> -->
+												</div>
+												<?php if( !empty( $val['logValue'] ) ): ?>
+												<div class="frow">
+													<div class="logkey"><?php echo $val['logKey'];?>:</div>
+													<div class="logvalue"><?php echo $val['logValue'];?></div>
+												</div>
+												<?php endif; ?>
+
+												<?php if( !empty( $val['descript'] ) ): ?>
+													<div class="frow">
+													<div class="descTip">备注:</div>
+													<div class="descript"><?php echo $val['descript']; ?></div>
+													</div>
+												<?php endif; ?>
+										</div>
+								<?php endforeach; ?>
+							</div>
+							<div class="tcell item-descript"><span class="note"></span></div>
+						</div>	
+						<?php endif; ?>
+
+
+
+				</div>
+			</div>
+		</div>
+
+</div>
+<?php 
+	endif;
+	echo V('common','popups_footer',array('save'=>array('title'=>'确认','url'=>'{__order/givebackOrder__}','where'=>array('orderSn'=>$orderSn),'statusClose'=>1),)); 
+?>
+
+<script>
+ (function($){
+ 	$.cssLoader("__ASSETS__/css/jedate.css");
+ 	$.jsLoader("__ASSETS__/js/jedate.js?v={TIME}",function(){
+ 			jeDate("#givebackTime",{
+            	format:"YYYY-MM-DD hh:mm",
+            	isTime:true,
+            	isShow:true,
+            	fixed:true,
+            	minDate:jeDate.nowDate({DD:0}),
+            	//maxDate: jeDate.nowDate({DD:0}), //设定最大日期为当前日期
+        	})
+ 	});
+ })(model);
+</script>
+

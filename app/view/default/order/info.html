@@ -1,0 +1,96 @@
+<?php
+	$info = isset( $var1 ) ? $var1 : '';
+if( !empty( $info )):    
+?>
+<style>
+.order-info .form-item{width:98%;font-size:0.7rem;}
+.order-info .form-item .item-title{width:8rem;}
+.order-info .form-item .item-content{width:auto;}
+</style>
+<div class="order-info">
+<div class="form-item trow">
+		<div class="tcell item-title"><span>单号:</span></div>
+		<div class="tcell item-content">
+				<div class="order-classify">
+		        		<span>设备类型:</span>
+		        		<span><?php echo $info['classifyName'];?></span>
+		        </div>
+	        	<div class="order-sn">
+	        		<span>订单编号:</span>
+	        		<span><?php echo $info['orderSn'];?></span>
+	        	</div>
+	        	<div class="order-time">
+	        		<span>下单时间:</span>
+	        		<span><?php echo date('Y-m-d H:i',$info['ctime']);?></span>
+	        	</div>
+		</div>
+		
+</div>
+<div class="form-item trow">
+		<div class="tcell item-title"><span>客户信息:</span></div>
+		<div class="tcell item-content">
+			<div style="margin-left:0.5rem;">
+        		<div class="frow">
+        		<div class="user-name"><?php echo $info['userName'];?></div>
+        		<div class="user-mobile"><?php echo $info['userMobile'];?></div>
+        		</div>
+        		<div class="frow user-areas frow-wrap">
+        				<div><?php echo $info['provinceName'];?></div>
+        				<div><?php echo $info['cityName'];?></div>
+        				<div><?php echo $info['areaName'];?></div>
+        		</div>
+        		<div class="user-address"><?php echo $info['address'];?></div>
+        	</div>
+		</div>
+		
+</div>
+<div class="form-item trow">
+		<div class="tcell item-title"><span>凭租时间:</span></div>
+		<div class="tcell item-content">
+			<div>
+				<div class="delivery-time">
+                    <span>提货时间:</span>
+                    <span><?php echo date('Y-m-d H:i',$info['deliveryTime']);?></span>
+            	</div>
+
+	            <div class="order-warehouse">
+		                    <span>提货仓库:</span>
+		                    <span><?php echo $info['warehouseName'];?></span>
+	            </div>
+                 <div class="order-way">
+                    <span>提货方式:</span>
+                    <span><?php echo $info['way']==1?'快递上门':'自提';?></span>
+                </div>
+                
+        		<div class="ration-start">
+        			<span>开始时间:</span>
+        			<span><?php echo date('Y-m-d',$info['rationStartTime']);?></span>
+        		</div>
+        		<div class="ration-end">
+        			<span>结束时间:</span>
+        			<span><?php echo date('Y-m-d',$info['rationEndTime']);?></span>
+        		</div>
+                <?php if( !empty( $info['pretime'] )): ?>
+                <div class="pretime">
+                    <span>发货占时:</span>
+                    <span><?php echo ceil($info['pretime']/3600/24).'天';?></span>
+                </div>
+                <?php endif; ?>
+                <?php if( !empty( $info['backtime'] ) ): ?>
+                <div class="pretime">
+                    <span>回库占时:</span>
+                    <span><?php echo ceil($info['backtime']/3600/24).'天' ;?></span>
+                </div>
+                <?php endif; ?>
+                
+
+        	</div>
+		</div>
+		
+</div>
+
+
+</div>
+
+
+<?php endif; ?>

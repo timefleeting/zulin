@@ -1,0 +1,47 @@
+<?php 
+	$uuid  = isset( $var1 ) ? $var1   : Q('uuid');    //唯一标识号
+	$title = isset( $var2 ) ? $var2   : Q('title');   //标题
+	$tabs  = isset( $var3 ) ? $var3   : Q('tabs');	  //操作tab项
+	$active= isset( $var4 ) ? $var4   : Q('active');  //选中活动项
+?>
+<style>
+.popups-content{font-size:1rem;}
+.popups-content .fullscreen{background: #F2F2F2;}
+.popups-content .fullscreen .fullcontent{background: #ffffff;}
+.popups-content .header .trow,.popups-content .fullscreen .fullcontent,.popups-content .footer .trow{width:80%;}
+.popups-content .header .modal-title{padding:0.5rem 0.5rem 0.5rem 0rem;}
+.popups-content .header .modal-close{background:#E9E0D6;color:#888888;border-radius:7px;padding-left:2rem;padding-right:2rem;padding:0.5rem;font-size:0.9rem;}
+.popups-content .header .modal-close:hover{cursor: pointer;background:#7FFFD4;color:#ffffff;}
+.popups-content .footer{background: #333744;color:#fff;}
+.popups-content .footer .operate-btn{display: inline-block;background:red;padding:0.5rem 8rem;color:#ffffff;letter-spacing: 0.8rem;font-weight: bold;font-size: 1.3rem;border-radius: 10px;}
+.popups-content .footer .operate-btn:hover{cursor: pointer;background:#079DFF;}
+
+.tabs{background:#F2F2F2;line-height:2rem;padding-top:0.5rem;}
+.tabs .tabs-item{display:inline-block;padding:0.5rem 2rem 0.5rem 2rem;}
+.tabs .tabs-item.active{background:#ffffff;color:#0084ff;}
+.tabs .tabs-item.await:hover{cursor: pointer;background:red;color:#ffffff;}
+</style>
+<div class="popups-content popups-content-<?php echo $uuid;?>">
+	<!-- head title -->
+	<div class="header noselect">
+		<div class="trow">
+			 <div class="tcell w70"><span class="modal-title"><?php echo $title; ?></span></div>
+			 <div class="tcell w30 textright"><div class="row textright"><div class="cell pull-right"><div class="modal-close">关闭</div></div></div></div>
+		</div>
+	</div>
+	<!-- head title end -->
+	<!-- tabs -->
+	<?php if(!empty( $tabs ) ): ?>
+		<div class="trow noselect">
+			<div class="tabs tcell w100 textcenter">
+			<?php foreach( $tabs as $key => $val ): $title=isset($val['title'])?$val['title']:'';$url=isset($val['url'])?$val['url']:''; ?>
+					<div class="tabs-item tabs-item-<?php echo $key;?><?php echo $key==$active?' active':' await';?>" data-url="<?php echo $url;?>" param-uuid="<?php echo $uuid;?>" ><?php echo $title;?></div>
+			<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+<!-- tabs end -->
+
+<!-- content -->
+	<div class="fullscreen hasheader<?php echo !empty($tabs)?' hastabs':'';?> hasfooter">
+			<div class="fullcontent center">

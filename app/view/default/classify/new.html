@@ -1,0 +1,45 @@
+<?php 
+$uuid  = 0;
+$title = "类目添加";
+echo V('common','popups_head',0,$title); 
+?>
+
+<div class="form-content">
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>类目名称:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="name" placeholder="请输入类目名称" value="" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>简单描述:</span></div>
+			<div class="tcell item-content">
+				<textarea class="form-control" param-key="descript" type="text" placeholder="请输入简单描述" value="" ></textarea>
+			</div>
+			<div class="tcell item-descript"><span>最多只能输入120字</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>排序:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="sort"  type="text" placeholder="帐号排序" value="" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="status">
+							<option value="1" >有效</option>
+							<option value="0" >无效</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+</div>
+<?php echo V('common','popups_footer',array('add'=>array('title'=>'添加','url'=>'{__classify/add__}','statusClose'=>1))); ?>

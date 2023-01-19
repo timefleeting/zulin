@@ -1,0 +1,149 @@
+@media screen and  (min-width:800px) {html {font-size: 14px;}}
+@charset "utf-8";
+@media screen and  (min-width:1024px) {html {font-size: 14px;}}
+@media screen and  (min-width:1280px) {html {font-size: 14px;}}
+@media screen and  (min-width:1400px) {html {font-size: 14px;}}
+@media screen and  (min-width:1680px) {html {font-size: 16px;}}
+@media screen and  (min-width:1920px) {html {font-size: 16px;}}
+
+body,button,dd,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,input,legend,li,ol,p,select,table,td,textarea,th,ul {margin:0;padding:0;}
+body,button,input,select,table,textarea{line-height:1.25rem;font-family:'microsoft yahei',Verdana,Arial,Helvetica,sans-serif;}
+body {margin:auto;color:#333;  line-height:1.25rem;}
+fieldset,img {border:0}
+ol,ul,li {  list-style:none}
+address,em {font-style:normal}
+a { color:#333; text-decoration:none; outline:none}
+table { border-collapse:collapse}
+table, td, tr, th { font-size: .7rem; }
+
+*{-webkit-tap-highlight-color:rgba(0,0,0,0);}
+.clearfix:after {visibility: hidden;display: block;font-size: 0;content: " ";clear: both;height: 0;}
+input[type="button"], input[type="submit"], input[type="reset"] {-webkit-appearance: none;}
+blockquote,button,dd,dl,dt,fieldset,form,hr,input,legend,li,ol,p,pre,td,textarea,th,ul {margin: 0;padding: 0}
+body {overflow-y: auto;margin: 10px auto;-webkit-overflow-scrolling: touch;margin: 0; padding: 0; height: 100%; font-size: 16px; font-weight: 500; }
+h1,h2,h3,h4,h5,h6,strong {font-weight: 400;margin: 0}
+ol,ul {list-style: none}
+fieldset,img {border: 0}
+img {max-width: 100%}
+button,input,optgroup,select,textarea {font: inherit;margin: 0;color: inherit;outline: 0;}
+button,input[type=button],input[type=reset],input[type=submit],select {-webkit-appearance: none;appearance: none}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button {-webkit-appearance: none}
+textarea {resize: none}
+input {line-height: normal}
+input::-webkit-input-placeholder {color: #c1c4c5}
+a,button,div,i,input,li,select,textarea {border: none;-webkit-tap-highlight-color: transparent}
+.border-b:after,.border-b:before,.item-box .dheader,.item-box .header,.pop-box .txt {border-bottom: 1px solid #dfe0df}
+a,img {-webkit-touch-callout: none}
+a,a:visited {text-decoration: none;color: inherit}
+em,i {font-style: normal}
+.row {width:100%;margin-left: auto;margin-right: auto; }
+.row::before, .row::after {content: ' ';display: table; }
+.row::after {clear: both; } 
+.cell{float: left;position: relative;min-height: 1px;padding-right:0;padding-left: 0;}
+.trow {width:100%;margin-left: auto;margin-right: auto; display:table;height:100%;}
+.trow::after{content: " ";display: block;height: 0;clear: both;visibility: hidden;overflow: hidden;}
+.tcell{display:table-cell;position: relative;min-height: 10px;padding-right: 0px;padding-left: 0px;vertical-align: middle;}
+.xfixed{-webkit-transform: translate(0,0%);-ms-transform: translate(0,0%);-o-transform: translate(0,0%);transform: translate(0,0%);}
+/****/
+.textcenter{text-align:center;}
+.textright{text-align:right;}
+.textleft{text-align:left;}
+.texttop{vertical-align: top;}
+.textmiddle{vertical-align: middle;}
+.textbottom{vertical-align: bottom;}
+.clear:before, .clear:after{display: table;content: " ";}
+.clear:after {clear: both}
+.noselect {-webkit-tap-highlight-color: rgba(255, 255, 255, 0);-webkit-user-select: none;-moz-user-focus: none;-moz-user-select: none;}
+.center{ margin:0 auto;}
+/**/
+.xfixed {-webkit-transform: translate(0, 0%);-ms-transform: translate(0, 0%);-o-transform: translate(0, 0%);transform: translate(0, 0%);}
+.w10 {  width: 10%;  }
+.w20 {  width: 20%;  }
+.w30 {  width: 30%;  }
+.w40 {  width: 40%;  }
+.w50 {  width: 50%;  }
+.w60 {  width: 60%;  }
+.w70 {  width: 70%;  }
+.w80 {  width: 80%;  }
+.w90 {  width: 90%;  }
+.w100 {  width: 100%;  }
+.pull-left {  float: left;  }
+.pull-right {  float: right;  }
+.word-break{word-break:break-all;white-space:pre-wrap;}
+/*兼容支持:
+	Android 2.3 开始就支持旧版本 display:-webkit-box;4.4 开始支持标准版本 display: flex;
+	IOS  6.1 开始支持旧版本 display:-webkit-box; 7.1 开始支持标准版本display: flex;
+	PC	ie10开始支持，但是IE10的是-ms形式的
+	Edge:13;Firefox:47;Chrome:31;Safari:10;Opera:39;IOS Safari:10;Opra Mini:all;Android Browser:52;Chrome for Android:51;
+*/
+.frow{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;flex-direction:row;
+	flex-wrap:nowrap;overflow:hidden;justify-content:flex-start;align-items:center;}  /*表示水平方向从左到右排列，此时水平方向轴线为主轴,nowrap不换行*/
+/*排列方式*/
+.frow-xr{flex-direction:row-reverse;}/*与row相反*/
+.frow-y{flex-direction: column;}/*垂直方向从上到下排列，此时垂直方向轴线为主轴*/
+.frow-yr{flex-direction:column-reverse;}/*与column相反*/
+.frow-wrap{flex-wrap:wrap;} /*表示换行，溢出的Flex子项会被放到下一行*/
+.frow-wrap-reverse{flex-wrap:wrap-reverse;}/*表示反方向换行*/
+/*对齐方式*/
+.frow-left{	justify-content:flex-start; }/*主轴(水平方向)上Flex子项的对齐方式*/
+.frow-right{ justify-content:flex-end; } /*与行的结束位置对齐*/
+.frow-center{ justify-content:center; }  /*居中*/
+.frow-between{ justify-content:space-between; }/*两端对齐,中间等分,一项时left*/
+.frow-around{ justify-content:space-around; } /*间距相等，中间间距是两端间距的2倍,一项时center*/
+.frow-top{ align-items:flex-start; } /*Y轴上对齐*/
+.frow-middle{ align-items:center; }  /*中对齐*/
+.frow-bottom{ align-items:flex-end; } /*底部对齐*/
+.frow-stretch{ align-items:stretch; } /*默认值，当Flex子项未设置高度或者高度值为auto时stretch起作用将Flex子项高度设置为行高度.只有一行的情况子项高度为容器的高度*/
+.frow-baseline{ align-items:baseline; }/*表示基线对齐，当行内轴与侧轴在同一线上，即所有Flex子项的基线在同一线上时，效果等同于flex-start*/
+/*多行情况Y轴对齐*/
+.frows-top{align-content:flex-start;} /*内容靠上对齐.表示各行与侧轴开始位置对齐*/
+.frows-middle{align-content:center;}  /*内容垂直居中,各行与侧轴中间对其*/	
+.frows-bottom{align-content:flex-end;} /*内容居下,表示各行与侧轴的结束位置对齐*/
+.frows-stretch{align-content:stretch;} /*默认值,子项未设高度stretch起作用*/
+.frows-between{align-content:space-between;}/*两端对齐，中间间距相等*/
+.frows-around{align-content:space-around;} /*各行之间间距相等，中间间距是两端间距的2倍*/
+/*作用于子项上属性*/
+/*用来指定Flex子项的排列顺序,数值越小，越靠前，可以为负数*/
+.fo1{order:1;}
+.fo2{order:2;}
+.fo3{order:3;}
+.fo4{order:4;}
+.fo5{order:5;}
+.fo6{order:6;}
+.fo7{order:7;}
+.fo8{order:8;}
+.fo9{order:9;}
+/*属性定义项目的放大比例,子项的扩展比例，不可以为负数，Flex容器会根据Flex子项设置的扩展比例作为比率来分配剩余空间.默认0*/
+.fk1{flex-grow:1;word-break:break-all;} 
+.fk2{flex-grow:2;word-break:break-all;}
+.fk3{flex-grow:3;word-break:break-all;}
+.fk4{flex-grow:4;word-break:break-all;}
+.fk5{flex-grow:5;word-break:break-all;}
+.fk6{flex-grow:6;word-break:break-all;}
+.fk7{flex-grow:7;word-break:break-all;}
+.fk8{flex-grow:8;word-break:break-all;}
+.fk9{flex-grow:9;word-break:break-all;}
+/*定义了项目的缩小比例，默认为1,不可以为负数,Flex容器会根据Flex子项设置的收缩比例作为比率来收缩各个Flex子项.默认1*/
+/*注意：flex-shrink只能在不换行的情况下使用*/
+.fs1{flex-shrink:1;word-break:break-all;}
+.fs2{flex-shrink:2;word-break:break-all;}
+.fs3{flex-shrink:3;word-break:break-all;}
+.fs4{flex-shrink:4;word-break:break-all;}
+.fs5{flex-shrink:5;word-break:break-all;}
+.fs6{flex-shrink:6;word-break:break-all;}
+.fs7{flex-shrink:7;word-break:break-all;}
+.fs8{flex-shrink:8;word-break:break-all;}
+.fs9{flex-shrink:9;word-break:break-all;}
+/*初始宽度,它的默认值为auto,即项目的本来大小,需要限制宽度需要加单位,即使是0*/
+.fbrow{flex-basis:auto;}
+/*align-self属性,单个项目有与其他项目不一样的对齐方式.可覆盖align-items属性.默认值为auto.*/
+.fas-top{align-self:flex-start;} /*Y轴上对齐*/
+.fas-middle{align-self:center;}  /*中对齐*/
+.fas-bottom{align-self:flex-end;} /*底部对齐*/
+.fas-stretch{align-self:stretch;} /*默认值，当Flex子项未设置高度或者高度值为auto时stretch起作用将Flex子项高度设置为行高度.只有一行的情况子项高度为容器的高度*/
+.fas-baseline{align-self:baseline;}
+
+
+
+
+

@@ -1,0 +1,138 @@
+<?php 
+	/**  只有已分配,未提货的订单才能调仓*/
+	$orderSn 	=  Q('ordersn');
+	$device     =  Q('device');
+	Q('orderSn',$orderSn);
+	$infoRes 	=  C('order','find');
+	$info 	 	=  isset( $infoRes['data'] ) ? $infoRes['data'] : false; //1，订单信息
+
+	/*1,订单提货仓*/
+	$orderWarehouse  = isset( $info['warehouse'] ) ? $info['warehouse'] : false;
+	$orderWarehouseName = isset( $info['warehouseName'] ) ? $info['warehouseName'] : false; //需调仓
+	/*2,该订单设备,以防订单设备不对应*/
+	$devices   = array( $device );
+	$opInfoRes = C('orderProduct','listsByUuids',$orderSn,$devices); 
+	$opInfo    = isset( $opInfoRes[0] ) ? $opInfoRes[0] : false;
+	$opName    = isset( $opInfo['name'] ) ? $opInfo['name'] : false;
+	$opDevice  = isset( $opInfo['device'] ) ? $opInfo['device'] : false; //订单设备
+
+	$title   	=  '订单产品:'.$opName.' 开始调仓';
+	$tabs 	 	=  array();
+	$tabsIndex 	= '';
+	echo V('common','popups_head',$orderSn,$title,$tabs,$tabsIndex); 
+
+	Q('uuid',$opDevice);
+	$deviceRes  = C('device','find');
+	$deviceInfo = isset( $deviceRes['data'] ) ? $deviceRes['data'] : false;
+
+if( !empty( $info ) && !empty( $deviceInfo )):
+		$statusList = C('deviceTranfer','deviceStatus');
+
+
+	    if( $orderWarehouse==$deviceInfo['targetWh'] && $deviceInfo['targetWhStatus']==1 ){
+			echo '<div class="form-content">
+			<div class="form-item trow">
+				<div class="tcell textcenter" style="color:red;font-size:1.1rem;border-bottom:1px dashed #ddd;padding-bottom:0.5rem;"><span>所在仓与提货仓相同,不需要调仓</span></div>
+			</div>';
+			die;	
+		}
+		$transfer   = C('deviceTranfer','findDevice',$opDevice); //是否正在流转
+		$fromWarehouseName  = isset( $transfer['fromWarehouseName'] ) ? $transfer['fromWarehouseName'] : '';
+		$toWarehouseName 	= isset( $transfer['toWarehouseName'] )   ? $transfer['toWarehouseName'] : '';  
+		$transferOrderSn    = isset( $transfer['orderSn'] ) ? $transfer['orderSn'] : 0;
+
+
+		$orderTracking = '';
+		$orderDesciptStr = '请输入调仓备注最多120字';
+		$orderDstatus = 0;
+		if( $transferOrderSn== $orderSn){
+			$orderTracking   = $transfer['tracking'];
+			$orderDesciptStr = !empty($transfer['descript']) ?$transfer['descript'] : '请输入调仓备注最多120字';
+			$orderDstatus    = $transfer['dstatus'];
+		}
+
+?>
+<div class="form-content">
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>订单编号:</span></div>
+			<div class="tcell item-content">
+				 <?php echo $info['orderSn']; ?>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>订单提货时间:</span></div>
+			<div class="tcell item-content">
+				 <div class="frow">
+				 		<?php echo date('Y-m-d H:i',$info['deliveryTime']);?>
+				 </div>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>调仓信息:</span></div>
+			<div class="tcell item-content">
+				 <?php if(isset( $transfer['dstatus'] ) && $transfer['dstatus'] ==0): ?>
+					<div class="frow">
+				 		<div style="margin-right:0.5rem;color:red;"><?php echo $fromWarehouseName;?></div>
+				 		<div style="color:#8c8c8c;">调整到</div>
+				 		<div style="margin-left:0.5rem;color:red;"><?php echo $toWarehouseName;?></div>
+				 		<div style="margin-left:0.5rem;font-size:0.8rem; color:#8c8c8c;">正在调仓</div>
+				 	</div>
+				<?php else: ?>
+					<div class="frow">
+				 		<div style="margin-right:0.5rem;color:red;"><?php echo $deviceInfo['targetWhName'];?></div>
+				 		<div style="color:#8c8c8c;">调整到</div>
+				 		<div style="margin-left:0.5rem;color:red;"><?php echo $orderWarehouseName;?></div>
+				 	</div>
+				<?php endif; ?>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<?php if( $orderDstatus==1 ): ?>
+
+		<?php else: ?>
+
+		<?php if( $orderWarehouse!=$deviceInfo['targetWh'] || ($orderWarehouse==$deviceInfo['targetWh'] && $deviceInfo['targetWhStatus']==0) ): ?>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>运单号:</span></div>
+			<div class="tcell item-content">
+				 <input type="text" class="form-control" param-key="tracking" placeholder="如有运单号,请填写对应运单号" value="<?php echo $orderTracking;?>"  />	
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>调仓备注:</span></div>
+			<div class="tcell item-content">
+				 <textarea class="form-control" param-key="descript" placeholder="<?php echo $orderDesciptStr;?>" value="" ></textarea>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>调仓状态:</span></div>
+			<div class="tcell item-content">
+				<select class="form-control" param-key="dstatus">
+					<?php if( !empty( $statusList )): foreach( $statusList as $key => $val ): ?>
+						<option value="<?php echo $key;?>"><?php echo $val;?></option>
+					<?php endforeach; endif; ?>
+				</select>
+			</div>
+			<div class="tcell item-descript"><span class="note"></span></div>
+		</div>
+		<?php endif; ?>
+
+	    <?php endif; ?>
+
+</div>
+<?php 
+	endif;
+	echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__deviceTranfer/add__}','where'=>array('orderSn'=>$orderSn,'device'=>$device),'statusClose'=>1),)); 
+?>
+<?php echo V('common','form_image_js'); ?>
+

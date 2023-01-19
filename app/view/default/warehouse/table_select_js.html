@@ -1,0 +1,51 @@
+<script>
+(function($){
+		$('.form-content').on('click','.select-category',function(){
+				var popups = $.popups({width:'60%',height:'60%',top:'20%',left:'20%',});
+				var url    = "{__category/table_select_control__}",d={};
+				var loading= $.loading().open();
+				var self   = this;
+				var parent = this.parentNode;
+				var selectInput = parent.querySelector('.control-select');
+				var type = self.getAttribute('data-type');
+				var value = selectInput.value;
+
+				$.ajaxHtml(url,d,true,function(html){
+						var open = popups.open(html);
+						loading.close();
+						var tableNode = open.querySelector('.table-select');
+						var typeNotice='';
+						if(type=='radio'){
+							typeNotice = '只能选择一个';
+							reLoadList(tableNode,false,false,selectRadio);
+						}else{
+							typeNotice = '可以选择多个';
+							reLoadList(tableNode);
+						}
+						$(tableNode.parentNode.querySelector('.lists-notice')).html(typeNotice);
+						//事件:确认选择
+						$(open).on('click','.footer-btn-confirm',function(){
+								var trowon,uuid='',name='';
+								try{
+									trowon =  tableNode.querySelector('.list-trow.on')
+									uuid   =  trowon.getAttribute('data-uuid');
+									name   =  trowon.getAttribute('data-name');
+								}catch(e){}
+								if(uuid==''||uuid==null){
+										$.notice('请选择分类');
+										return false;
+								}
+								selectInput.value=uuid;
+								$(self).html(name);
+								popups.close(open);
+						});
+				});
+		});
+		function selectRadio(tableNode){
+				$(tableNode.querySelector('.table-checkall').parentNode).remove();
+				$(tableNode.querySelectorAll('.table-checkbox')).each(function(idx,item){
+						$(item).remove();	
+				});
+		}
+})(model);
+</script>

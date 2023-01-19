@@ -1,0 +1,80 @@
+<?php 
+	$uuid 	 =  Q('uuid');
+	$infoRes =  C('classify','find',$uuid);
+	$info 	 =  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$title   =  $info['name'];
+	$tabs	 = array();
+	$optionNav = C('navigate','navFields','classify','index',3);
+	if( !empty( $optionNav )){
+			foreach( $optionNav as $key => $val ){
+				$tabs[$val['method']] = array('title'=>$val['name'],'url'=>"{__{$val['class']}/{$val['method']}__}");
+			}
+	}
+	$tabsIndex='edit';
+	echo V('common','popups_head',$uuid,$title,$tabs,$tabsIndex); 
+if( !empty( $info )):
+?>
+
+<div class="form-content">
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>类目编号:</span></div>
+			<div class="tcell item-content">
+				<?php echo $info['uuid'];?>
+			</div>
+			<div class="tcell item-descript"></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>类目名称:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="name" placeholder="请输入类目名称" value="<?php echo $info['name'];?>" />
+			</div>
+			<div class="tcell item-descript"><span class="note">(*必填)</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>简单描述:</span></div>
+			<div class="tcell item-content">
+				<textarea class="form-control" param-key="descript" type="text" placeholder="请输入简单描述" value="<?php echo $info['descript'];?>" ><?php echo $info['descript'];?></textarea>
+			</div>
+			<div class="tcell item-descript"><span>最多只能输入120字</span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>排序:</span></div>
+			<div class="tcell item-content">
+				<input class="form-control" param-key="sort"  type="text" placeholder="帐号排序" value="<?php echo $info['sort'];?>" />
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>状态:</span></div>
+			<div class="tcell item-content">
+					<select class="form-control" param-key="status">
+							<option value="1" <?php echo $info['status']==1?'selected':'';?> >有效</option>
+							<option value="0" <?php echo $info['status']==0?'selected':'';?> >无效</option>
+					</select>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>创建时间:</span></div>
+			<div class="tcell item-content">
+				<?php echo date('Y-m-d H:i',$info['ctime'] ); ?>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+		<div class="form-item trow">
+			<div class="tcell item-title"><span>更新时间:</span></div>
+			<div class="tcell item-content">
+				<?php echo date('Y-m-d H:i',$info['mtime'] ); ?>
+			</div>
+			<div class="tcell item-descript"><span></span></div>
+		</div>
+
+</div>
+<?php endif; ?>
+<?php echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__classify/save__}','where'=>array('uuid'=>$uuid),'statusClose'=>1))); ?>
+

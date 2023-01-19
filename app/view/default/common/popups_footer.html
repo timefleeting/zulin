@@ -1,0 +1,42 @@
+<?php
+	$operate = isset( $var1 ) ? $var1 : Q('operate'); //操作按钮
+?>		
+		</div>
+	</div>
+<!-- content end -->
+<!-- footer -->
+<?php if( !empty( $operate )): ?>
+<div class="footer noselect">
+	<div class="trow">
+		<div class="tcell w100 textcenter operate">
+			<?php foreach( $operate as $key =>$val ):
+					$title= isset($val['title'])?$val['title']:'';
+					$url  = isset($val['url'])?$val['url']:'';
+					$queryClass = isset( $val['class'] ) ? $val['class'] : 'footer-btn';
+					$where = isset( $val['where'] ) ? $val['where'] : '';
+					$form  = isset( $val['form'] ) ? $val['form'] : '';
+					$statusClose = isset( $val['statusClose'] ) ? $val['statusClose'] : '';
+					$statusCloseAll = isset( $val['statusCloseAll'] ) ? $val['statusCloseAll'] : '';
+					$whereParam = '';
+					$formData   = '';
+					if( !empty( $where )){
+						$whereParamArr  = array();
+						foreach( $where as $key => $val ){ $whereParamArr[] = " where-{$key}='{$val}'"; }
+						$whereParam = implode(',',$whereParamArr);
+					}
+					if( !empty( $form ) ){
+						$formDataArr = array();
+						foreach( $form as $key => $val ){ $formDataArr[] = " form-{$key}='{$val}'"; }
+						$formData = implode(' ',$formDataArr);
+					}
+			?>
+					<div class="operate-btn <?php echo $queryClass;?> footer-btn-<?php echo $key;?>" data-statusClose="<?php echo $statusClose;?>" data-statusCloseAll="<?php echo $statusCloseAll;?>" data-url="<?php echo $url;?>"<?php echo $whereParam;?> <?php echo $formData;?>><?php echo $title;?></div>
+			<?php endforeach; ?>		
+		</div>
+	</div>
+</div>
+<?php endif; ?>
+<!-- footer end -->
+
+</div>
+<?php echo V('common','popups_js'); ?>

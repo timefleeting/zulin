@@ -1,0 +1,21 @@
+<?php 
+	$orderSn 	=  Q('ordersn');
+	Q('orderSn',$orderSn);
+	$infoRes 	=  C('order','find');
+	$info 	 	=  isset( $infoRes['data'] ) ? $infoRes['data'] : false; 
+	$title   	=  '订单:'.$orderSn.' 订单完成';
+	$tabs 	 	=  array();
+	$tabsIndex 	= '';
+	echo V('common','popups_head',$orderSn,$title,$tabs,$tabsIndex); 
+	$statusList = C('order','deviceStatus');
+if( !empty( $info )):
+?>
+<div class="form-content" style="position:relative;height:100%;">
+		<div class="textcenter" style="position:absolute;top:40%;width:100%;font-size:1.5rem;color:#8c8c8c;" >是否确定要完成订单?</div>
+</div>
+<?php 
+	endif;
+	echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__order/completeOrder__}','where'=>array('orderSn'=>$orderSn),'statusClose'=>1),)); 
+?>
+<?php echo V('common','form_image_js'); ?>
+

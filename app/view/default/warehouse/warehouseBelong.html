@@ -1,0 +1,83 @@
+<?php 
+	$uuid 	 	=  Q('uuid');
+	$infoRes 	=  C('warehouse','find');
+	$info 	 	=  isset( $infoRes['data'] ) ? $infoRes['data'] : false;
+	$title   	=  $info['name'];
+	$tabs 	 =  array();
+	$optionNav = C('navigate','navFields','warehouse','index',3);
+	if( !empty( $optionNav )){
+			foreach( $optionNav as $key => $val ){
+				$tabs[$val['method']] = array('title'=>$val['name'],'url'=>"{__{$val['class']}/{$val['method']}__}");
+			}
+	}
+	$tabsIndex 	= 'warehouseBelong';
+	echo V('common','popups_head',$uuid,$title,$tabs,$tabsIndex); 
+if( !empty( $info )):
+?>
+<style>
+.warehouseBelong .notice-head{padding-left:1rem;}
+.warehouseBelong .lists-query .search-btn{margin-left:0.2rem;}
+.warehouseBelong .lists-query .query-btn{padding-left:1rem;padding-right:1rem;}
+</style>
+<div class="form-content warehouseBelong">
+		<div class="form-item trow">
+			 <div class="frow">
+			 		<div class="notice-head">勾选,最多只能选择10个.关联仓库以便调仓,所关联的仓库代表副仓,只允许单向从副仓商品往主仓调度。</div>
+
+			 </div>
+		</div>
+
+		<div class="form-item trow">
+				<div class="lists-content">
+						<div class="lists-option">
+							<div class="lists-notice"></div>
+							<div class="frow lists-query">
+								<div>
+									<select class="query-control" param-key="keyfield" >
+									 		<option value="name">仓库名称</option>
+									 		<option value="provinceName">省</option>
+										 	<option value="cityName">市</option>
+										 	<option value="areaName">区</option>
+									</select>
+								</div>
+								<div>
+									 <input class="query-control" param-key="keyword" type="text" placeholder="请输入要搜索的分类" />
+								</div>
+								<div class="search-btn">
+									 <button class="query-btn" data-formKey="query-control" query-btn-status="0" >全部</button>
+								</div>
+								<div class="search-btn">
+									 <button class="query-btn" data-formKey="query-control" query-btn-status="1" >已选</button>
+								</div>
+							</div>
+						</div>
+						<div class="lists-table data-table table-select" data-url="{__warehouse/table_select__}" init-uuid="<?php echo $uuid;?>" ></div>
+				</div>
+		</div>
+
+</div>
+<?php 
+	endif;
+	echo V('common','popups_footer',array('save'=>array('title'=>'保存','url'=>'{__warehouseBelong/save__}','where'=>array('uuid'=>$uuid),'form'=>array('uuids'=>'warehouse-checkbox','resetUuids'=>'warehouse-checkbox-pagination')),)); 
+?>
+<script>
+(function($){
+	$.ready(function(){
+			 var tableNode = document.querySelector('.warehouseBelong .table-select') || {};
+			 reLoadList(tableNode,false,false,tableCallback);
+	});
+
+	function tableCallback(tableNode){
+			var uuid='';
+			$(tableNode.querySelectorAll('.list-trow')).each(function(idx,item){
+					uuid = item.getAttribute('data-uuid');
+					if(uuid=="<?php echo $uuid;?>"){
+							$(item.querySelector('.warehouse-checkbox')).remove();
+					}
+
+			});
+	}
+
+})(model);
+</script>
+
