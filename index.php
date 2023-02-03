@@ -13,7 +13,7 @@ $system = array(
 			            'prefix'    => '',
 			            'name'      => 'lease',
 			            'user'      => 'xroot',
-			            'pwd'       => 'Anhuu19_5210',
+			            'pwd'       => 'xxxxxx',
 			            'port'      =>  '3306',
 	    		),
 	    		'1' => array( 	 //
@@ -24,7 +24,7 @@ $system = array(
 			            'prefix'    => '',
 			            'name'      => 'lease',
 			            'user'      => 'xroot',
-			            'pwd'       => 'Anhuu19_5210',
+			            'pwd'       => 'xxxxxx',
 			            'port'      =>  '3306',
 	    		),
 		),
